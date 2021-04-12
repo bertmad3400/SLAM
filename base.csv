@@ -1,0 +1,22 @@
+TAG	,Name in repo or git url		,Purpose (verb phrase)
+S	,backlight_control			,controlling the screen brightness.
+	,highlight				,syntax highlighting of STDIN.
+	,neovim					,editing text based files.
+	,firefox				,browsing the web.
+	,sxiv					,viewing images.
+	,dunst					,getting notifications.
+	,man-db					,reading man pages.
+	,pulseaudio-alsa			,having sound on your system.
+	,pulsemixer				,controlling sound on your system.
+	,unclutter				,hidding inactive mouse.
+	,xorg-xwininfo				,querying information about windows.
+	,xorg-server				,having a graphical server
+	,xorg-init				,starting the graphical server
+	,git					,using git
+	,zsh					,the shell used by default
+	,x11-ssh-askpass			,for allowing use of ssh keys from agent
+	,slock
+	,
+A	,zsh-fast-syntax-highlighting		,syntax highlighting in ZSH
+A	,zsh-you-should-use			,suggesting aliases in ZSH
+
