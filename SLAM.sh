@@ -2,31 +2,24 @@
 
 # For when encountering problems
 error() {
-
 	echo "Error: $@" 1>&2
 	exit 1
-
 }
 
 # Function for checking whether it's booted as UEFI or BIOS
 checkBootMode() {
-
 	ls /sys/firmware/efi/efivars && { dialog --title "Boot-mode" --yesno "The detected boot mode is UEFI. Is that right?" 0 0 && bootMode="UEFI" || bootMode="BIOS"; } || { dialog --title "Boot-mode" --yesno "The detected boot-mode is BIOS. Is that right?" 0 0 && bootMode="BIOS" || bootMode="UEFI"; }
 
 	dialog --title "Boot-mode" --msgbox "The boot-mode has been set to $bootMode" 6 39
-
 }
 
 # Function for choosing which drive to install on
 locateInstallDrive() {
-
 	drive=$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 24 80 17 $( for drive in $(lsblk -dno NAME); do echo /dev/$drive; done) 3>&2 2>&1 1>&3)
-
 }
 
 # For verifying the size of the drive, and wiping in and thereby preparing it for formating
 prepareDrive() {
-
 	driveSize="$(lsblk -b --output SIZE -n -d "$drive")"
 
 	# Making sure the drive is the right size
