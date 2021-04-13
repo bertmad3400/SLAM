@@ -11,7 +11,7 @@ error() {
 # Function for checking whether it's booted as UEFI or BIOS
 checkBootMode() {
 
-	ls /sys/firmware/efi/efivars && { dialog --title "Boot-mode" --yesno "The detected boot mode is UEFI. Is that right?" && bootMode="UEFI" || bootMode="BIOS"; } || { dialog --title "Boot-mode" --yesno "The detected boot-mode is BIOS. Is that right?" && bootMode="BIOS" || bootMode="UEFI"; }
+	ls /sys/firmware/efi/efivars && { dialog --title "Boot-mode" --yesno "The detected boot mode is UEFI. Is that right?" 0 0 && bootMode="UEFI" || bootMode="BIOS"; } || { dialog --title "Boot-mode" --yesno "The detected boot-mode is BIOS. Is that right?" 0 0 && bootMode="BIOS" || bootMode="UEFI"; }
 
 	dialog --title "Boot-mode" --msgbox "The boot-mode has been set to $bootMode" 6 39
 
