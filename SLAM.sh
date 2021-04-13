@@ -12,7 +12,7 @@ checkBootMode() {
 # Function for choosing which drive to install on
 locateInstallDrive() {
 
-	lsblk -o NAME | tail -n +2 -f - | grep -v '[0-9]'
+	drive=$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 24 80 17 $( for drive in $(lsblk -dno NAME); do echo /dev/$drive; done) 3>&2 2>&1 1>&3)
 
 }
 
