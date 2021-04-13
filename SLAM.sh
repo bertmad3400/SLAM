@@ -16,12 +16,15 @@ locateInstallDrive() {
 
 }
 
-echo "Refreshing keyrings..."
-pacman --noconfirm -Sy archlinux-keyring 2> ErrorLog || { echo "Make sure to run this script as root, with an internet connection"; exit 1; }
-pacman --noconfirm --needed -Sy dialog || { echo "Make sure to run this script as root, with an internet connection."; exit 1; }
+# Only used for debugging, will maybe remove
+main() {
+	echo "Refreshing keyrings..."
+	pacman --noconfirm -S archlinux-keyring 2> ErrorLog || { echo "Make sure to run this script as root, with an internet connection"; exit 1; }
+	pacman --noconfirm --needed -S dialog || { echo "Make sure to run this script as root, with an internet connection."; exit 1; }
 
-dialog --title "LET'S GO!" --yesno "With refreshed keyrings and dialog installed we're are ready to take this script for a spin. Please, DO NOT run it unless you fully understand the risk! This was developed by me for me only, and as such there might be errors that worst case could wipe entire drives. You sure you want to continue?" 10 60 || { echo "User exited"; exit 1; }
+	dialog --title "LET'S GO!" --yesno "With refreshed keyrings and dialog installed we're are ready to take this script for a spin. Please, DO NOT run it unless you fully understand the risk! This was developed by me for me only, and as such there might be errors that worst case could wipe entire drives. You sure you want to continue?" 10 60 || { echo "User exited"; exit 1; }
 
-checkBootMode
-
+	checkBootMode
+	locateInstallDrive
+}
 
