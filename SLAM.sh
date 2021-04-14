@@ -65,6 +65,13 @@ getCredentials(){
 	done
 }
 
+# Function for getting all the needed user input. Will be run in the very start of the script.
+getUserInput(){
+
+	checkBootMode
+	locateInstallDrive
+	prepareDrive
+	getCredentials
 
 }
 
@@ -76,9 +83,7 @@ main() {
 
 	dialog --title "LET'S GO!" --yesno "With refreshed keyrings and dialog installed we're are ready to take this script for a spin. Please, DO NOT run it unless you fully understand the risk! This was developed by me for me only, and as such there might be errors that worst case could wipe entire drives. You sure you want to continue?" 10 60 || error "User exited"
 
-	checkBootMode
-	locateInstallDrive
-	prepareDrive
+	getUserInput
 }
 
 main
