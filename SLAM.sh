@@ -75,6 +75,12 @@ getUserInput(){
 
 }
 
+# Determine needed size of swap file based on RAM size + 2 GB
+getSwapSize(){
+	# Converting the output from KB to B and adding 2 GB
+	swapSize="$(expr "$(grep MemTotal /proc/meminfo | sed 's/[^0-9]*//g')" \* 1024 + 2147483648)"
+}
+
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
