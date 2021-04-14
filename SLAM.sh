@@ -81,6 +81,41 @@ getSwapSize(){
 	swapSize="$(expr "$(grep MemTotal /proc/meminfo | sed 's/[^0-9]*//g')" \* 1024 + 2147483648)"
 }
 
+# For properly formating the newly cleared drive
+# Will create on boot partition (based on the result from checkBootMode) and then one big root partition. Swap is in a swapfile
+formatDrive(){
+	# For creating the boot partition and setting the disklabel to GPT for UEFI boot
+	if [ "$bootMode" = "UEFI" ]
+	then
+		partitionScheme="	g 	# For making sure the drive has a GPT disklabel instead of DOS/MBR
+					n 	# Create the boot partition
+						# Chosing the default partition number
+						# Default first sector, let it start at the start of the disk
+					+512M	# Make the boot partition 512 MB in size
+					t	# Change the type of the partition
+					1	# Set it to type 1, or EFI System
+					n	# Create the root partition
+						# Chosing the default partition number
+						# Default first sector, let it start at the of free space on disk
+						# Default last sector, letting it take the rest of the space
+					w	# Write changes to disk "
+
+	# For setting the disklabel to DOS for BIOS booting
+	elif [ "$bootMode" = "BIOS" ]
+	then
+		partitionScheme="	o	# For creating DOS disklabel
+					n	# Create the partition
+						# Chosing the default partition type
+						# Chosing the default partition number
+						# Default first sector, let it start at the start of free space on disk
+						# Default last sector, letting it take the rest of the space
+					w	# Write the changes to the drive "
+	fi
+
+	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk $drive
+	$partitionScheme
+	EOF
+}
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
