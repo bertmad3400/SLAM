@@ -24,19 +24,19 @@ prepareDrive() {
 
 	# Making sure the drive is the right size
 	# Completly aborting if there isn't enough space
-	if [ $driveSize -le 1073741824 ];
+	if [ "$driveSize" -le 1073741824 ];
 	then
 		dialog --title "Too small" --msgbox "The selected drive, $drive, seem to be less than 1 GiB in size. This is simply to little space for the installation to continue, and as such, it will not end" 8 50; error "too little space on $drive"
 	
 	# Warning the user if there's less than 4 GiB available on the drive
-	elif [ $driveSize -le 4294967296 ];
+	elif [ "$driveSize" -le 4294967296 ];
 	then
 		dialog --title "Very little space" --yes-label "I know what I'm doing" --no-label "Whoops, MB, abort!" --yesno "The selected drive, $drive, seem to be less than 4 GiB in size. This may be enough, but is very much an unsupported use-case for this script as there's a good chance that it's not. Are you sure you want to continue?" 8 60 || error "User exited as there is less than 4 GiB on the drive"
 	fi
 
 
 	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then wipe it
-	dialog --title "WARNING!" --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Nuke deploying" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of=$drive bs=512 count=1 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
+	dialog --title "WARNING!" --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Nuke deploying" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of="$drive" bs=512 count=1 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
 
 }
 
