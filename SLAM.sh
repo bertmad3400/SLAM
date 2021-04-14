@@ -37,6 +37,34 @@ prepareDrive() {
 
 	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then wipe it
 	dialog --title "WARNING!" --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Nuke deploying" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of="$drive" bs=512 count=1 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
+}
+
+getCredentials(){
+	rootPass=$(dialog --no-cancel --passwordbox "Enter password for the root user." 12 65 3>&1 1>&2 2>&3 3>&1)
+	rootPass2=$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)
+	while [ "$rootPass" != "$rootPass2" ]
+	do
+		rootPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
+		rootPass2="$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)"
+	done
+
+	username=$(dialog --no-cancel --inputbox "Enter username for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)
+
+	while [ "$(expr "$username" : ^[a-z][-a-z0-9]*\$)" = 0 ]
+	do
+		username="$(dialog --no-cancel --inputbox "The username contained illegal characthers. It should start with lower case letters and only contain lower case letters and numbers, fitting the following regex: : ^[a-z][-a-z0-9]*\\$ " 14 70 3>&1 1>&2 2>&3 3>&1)"
+	done
+
+	userPass="$(dialog --no-cancel --passwordbox "Enter password for the new user." 12 65 3>&1 1>&2 2>&3 3>&1)"
+	userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
+
+	while ! [ "$userPass" = "$userPass2" ]
+	do
+		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
+		userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
+	done
+}
+
 
 }
 
