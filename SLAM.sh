@@ -218,6 +218,16 @@ piecesConfig() {
 	systemctl enable NetworkManager
 }
 
+configureUsers(){
+	# Set the root-password
+	echo "root":"$rootPass" | chpasswd
+
+	# Create new user and add it to needed/wanted groups
+	useradd -g users -G wheel,audio,input,optical,storage,video "$username"
+
+	echo "$username":"$userPass" | chpasswd
+}
+
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
