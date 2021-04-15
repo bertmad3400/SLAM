@@ -159,8 +159,8 @@ finishDrive () {
 	createFS
 	mountDrive
 
-	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware and dialog" 5 60
-	pacstrap /mnt base base-devel linux linux-firmware dialog
+	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware, dialog and git" 5 60
+	pacstrap /mnt base base-devel linux linux-firmware dialog git
 }
 
 # Function for configuring all these small things that don't really fit elsewhere
