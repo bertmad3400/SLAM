@@ -167,8 +167,8 @@ finishDrive () {
 	createFS
 	mountDrive
 
-	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware, dialog and git" 5 60
-	pacstrap /mnt base base-devel linux linux-firmware dialog git
+	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware, dialog, git and doas" 5 60
+	pacstrap /mnt base base-devel linux linux-firmware dialog git doas
 }
 
 # Function for creating the swap file on the new system
