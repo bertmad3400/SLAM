@@ -6,6 +6,13 @@ error() {
 	exit 1
 }
 
+# Function for checking if the device is a laptop
+checkLaptop() {
+	[ -d /sys/module/battery ] && { dialog --title "Laptop?" --yesno "The device has been detected to be a laptop. Is that right?" 0 0 && deviceType="Laptop" || deviceType="Desktop"; } || { dialog --title "Desktop?" --yesno "The device has been detected to be a desktop. Is that right?" 0 0 && deviceType="Desktop" || deviceType="Laptop"; }
+
+	dialog --title "$deviceType" --msgbox "The device has been registrered as a $deviceType" 6 39
+}
+
 # Function for checking whether it's booted as UEFI or BIOS
 checkBootMode() {
 	ls /sys/firmware/efi/efivars && { dialog --title "Boot-mode" --yesno "The detected boot mode is UEFI. Is that right?" 0 0 && bootMode="UEFI" || bootMode="BIOS"; } || { dialog --title "Boot-mode" --yesno "The detected boot-mode is BIOS. Is that right?" 0 0 && bootMode="BIOS" || bootMode="UEFI"; }
@@ -76,6 +83,7 @@ getCredentials(){
 # Function for getting all the needed user input. Will be run in the very start of the script.
 getUserInput(){
 
+	checkLaptop
 	checkBootMode
 	locateInstallDrive
 	prepareDrive
