@@ -193,6 +193,11 @@ piecesConfig() {
 	echo "	127.0.0.1	localhost
 		::1		localhost
 		127.0.1.1	$hostname.local	$hostname" | sed -e 's/^\s*//' >> /etc/hosts
+
+	# Configuring network
+	systemctl enable dhcpcd
+	pacman -S networkmanager
+	systemctl enable NetworkManager
 }
 
 # Only used for debugging, will maybe remove
