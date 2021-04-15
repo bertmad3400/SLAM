@@ -163,6 +163,16 @@ finishDrive () {
 	pacstrap /mnt base base-devel linux linux-firmware dialog git
 }
 
+# Function for creating the swap file on the new system
+createSwapFile(){
+	fallocate -l "$swapSize" /swapfile
+	chmod 600 /swapfile
+	mkswap /swapfile
+	swapon /swapfile
+	cp /etc/fstab /etc/fstab.back
+	echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+}
+
 # Function for configuring all these small things that don't really fit elsewhere
 piecesConfig() {
 	# Setting the local timezone
