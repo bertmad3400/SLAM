@@ -234,6 +234,14 @@ configureDoas(){
 	trap 'echo "permit persist wheel" > /etc/doas.conf' INT TERM EXIT
 }
 
+# Collection function used for configuring new install
+configureInstall(){
+	createSwapFile
+	piecesConfig
+	configureUsers
+	configureDoas
+}
+
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
