@@ -228,6 +228,12 @@ configureUsers(){
 	echo "$username":"$userPass" | chpasswd
 }
 
+# Give the user permission to run any command as root without password, which is needed to run YAY. Will change to normal perms at script exit
+configureDoas(){
+	echo "permit nopass root as $username" > /etc/doas.conf
+	trap 'echo "permit persist wheel" > /etc/doas.conf' INT TERM EXIT
+}
+
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
