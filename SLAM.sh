@@ -132,6 +132,18 @@ createFS(){
 
 }
 
+mountDrive(){
+
+	if [ "$bootMode" = "UEFI" ]
+	then
+		mount "${drive}2" /mnt
+
+	elif ["$bootMode" = "BIOS"]
+	then
+		mount "${drive}1" /mnt
+	fi
+}
+
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
