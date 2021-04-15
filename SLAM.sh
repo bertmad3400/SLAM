@@ -43,7 +43,7 @@ prepareDrive() {
 
 
 	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then wipe it
-	dialog --title "WARNING!" --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of=$drive bs=1M count=100 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
+	dialog --title "WARNING!" --defaultno --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of=$drive bs=1M count=1000 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
 }
 
 getCredentials(){
