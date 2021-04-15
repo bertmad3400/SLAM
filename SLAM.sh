@@ -144,6 +144,18 @@ mountDrive(){
 	fi
 }
 
+# Function for collecting all the functions for install arch on the selected drive
+finishDrive () {
+	getSwapSize
+	formatDrive
+	createFS
+	mountDrive
+
+	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware and dialog" 5 60
+	pacstrap /mnt base base-devel linux linux-firmware dialog
+}
+
+
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
