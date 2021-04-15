@@ -63,6 +63,14 @@ getCredentials(){
 		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
 		userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
 	done
+
+	hostname=$(dialog --no-cancel --inputbox "Enter a hostname for the computer" 12 65 3>&1 1>&2 2>&3 3>&1)
+
+	while [ "$(expr "$hostname" : ^[a-z][-a-z0-9]*\$)" = 0 ]
+	do
+		hostname="$(dialog --no-cancel --inputbox "The hostname contained illegal characthers. It should start with lower case letters and only contain lower case letters and numbers, fitting the following regex: : ^[a-z][-a-z0-9]*\\$ " 14 70 3>&1 1>&2 2>&3 3>&1)"
+	done
+
 }
 
 # Function for getting all the needed user input. Will be run in the very start of the script.
