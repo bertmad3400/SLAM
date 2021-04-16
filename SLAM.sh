@@ -223,7 +223,7 @@ configureUsers(){
 	echo "root":"$rootPass" | chpasswd
 
 	# Create new user and add it to needed/wanted groups
-	useradd -g users -G wheel,audio,input,optical,storage,video "$username"
+	useradd -m -g users -G wheel,audio,input,optical,storage,video "$username"
 
 	echo "$username":"$userPass" | chpasswd
 }
