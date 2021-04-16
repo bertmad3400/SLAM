@@ -26,7 +26,7 @@ checkBootMode() {
 
 # Function for choosing which drive to install on
 locateInstallDrive() {
-	drive=$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 24 80 17 $( for drive in $(lsblk -dno NAME); do echo /dev/$drive; done) 3>&2 2>&1 1>&3)
+	drive="$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 0 0 0 $( for drive in $(lsblk -dno NAME); do echo /dev/"$drive"; done) 3>&2 2>&1 1>&3)"
 }
 
 # For verifying the size of the drive, and wiping in and thereby preparing it for formating
@@ -47,13 +47,13 @@ prepareDrive() {
 
 
 	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then wipe it
-	dialog --title "WARNING!" --defaultno --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of=$drive bs=1M count=1000 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
+	dialog --title "WARNING!" --defaultno --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 && dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null 2> ErrorLog || error "User apparently didn't wan't to massacre $drive"
 }
 
 getCredentials(){
 	rootPass=$(dialog --no-cancel --passwordbox "Enter password for the root user." 12 65 3>&1 1>&2 2>&3 3>&1)
 	rootPass2=$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)
-	while [ "$rootPass" != "$rootPass2" -o "$rootPass" = "" ]
+	while [ "$rootPass" != "$rootPass2" ] || [ "$rootPass" = "" ]
 	do
 		rootPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't matchor you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
 		rootPass2="$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)"
@@ -98,7 +98,8 @@ getUserInput(){
 # Determine needed size of swap file based on RAM size + 2 GB
 getSwapSize(){
 	# Converting the output from KB to B and adding 2 GB
-	swapSize="$(expr "$(grep MemTotal /proc/meminfo | sed 's/[^0-9]*//g')" \* 1024 + 2147483648)"
+	swapSize="$(( $(grep MemTotal /proc/meminfo | sed 's/[^0-9]*//g') * 1024 + 2147483648 ))"
+	echo $swapSize
 }
 
 # For properly formating the newly cleared drive
@@ -132,7 +133,7 @@ formatDrive(){
 					w	# Write the changes to the drive "
 	fi
 
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk $drive
+	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk "$drive"
 	$partitionScheme
 	EOF
 }
@@ -158,7 +159,7 @@ mountDrive(){
 	then
 		mount "${drive}2" /mnt
 
-	elif ["$bootMode" = "BIOS"]
+	elif [ "$bootMode" = "BIOS" ]
 	then
 		mount "${drive}1" /mnt
 	fi
@@ -228,12 +229,12 @@ piecesConfig() {
 
 configureUsers(){
 	# Set the root-password
-	echo "root":"$rootPass" | chpasswd
+	echo "root:$rootPass" | chpasswd
 
 	# Create new user and add it to needed/wanted groups
 	useradd -m -s /bin/zsh -g users -G wheel,audio,input,optical,storage,video "$username"
 
-	echo "$username":"$userPass" | chpasswd
+	echo "${username}:${userPass}" | chpasswd
 }
 
 # Give the user permission to run any command as root without password, which is needed to run YAY. Will change to normal perms at script exit
@@ -252,21 +253,21 @@ configureInstall(){
 
 installYAY(){
 	dialog --infobox "Installing YAY..." 4 50
-	cd /opt
+	cd /opt || error "/Opt apparently didn't exist"
 	git clone https://aur.archlinux.org/yay-git.git
 	chown -R "$username" ./yay-git
-	cd yay-git
+	cd yay-git || error "Newly created yay-git folder didn't exist. This is probably a problem with the script, please report it to the developer"
 	doas -u "$username" -- makepkg -si
 }
 
 deployDotFiles(){
-	doas -u "$username" -- git clone --bare https://github.com/bertmad3400/dootfiles.git /home/"$username"/.dootfiles.git
+	doas -u "$username" -- git clone --bare https://github.com/bertmad3400/dootfiles.git "/home/$username/.dootfiles.git"
 
 	# Overwrite any existing file
-	doas -u "$username" -- /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME reset --hard
+	doas -u "$username" -- /usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" reset --hard
 
 	# Deploy the dotfiles
-	doas -u "$username" -- /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME checkout
+	doas -u "$username" -- /usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" checkout
 }
 
 # The next 3 functions are used for installing software from arch repos, AUR and git. $1 is the package name, $2 is the purpose of the program, $3 is what csv file the package name has been sourced from and $4 is the url of the package for git
@@ -293,30 +294,30 @@ gitIn(){
 
 installPackages(){
 	# $1 is the csv file containing packages to install
-	[ -f $1 ] || error "$1 was not found. This seems to be an error with the script, please report it to the developers"
+	[ -f "$1" ] || error "$1 was not found. This seems to be an error with the script, please report it to the developers"
 
 	# Create directory for installing git
 	mkdir -p "/home/$username/.local/src/"
 
-	$totalPackageCount=$(wc -l < $1)
+	totalPackageCount="$(wc -l < "$1")"
 	while IFS=, read -r tag package purpose
 	do
 		# Used for removing the url part from git package name
 		echo "$package" | grep -q "https:.*\/" && gitName="$(echo "$package" | sed "s/\(^\"\|\"$\)//g")"
-		currentPackageCount=$(expr $currentPackageCount + 1)
+		currentPackageCount=$(( $currentPackageCount + 1 ))
 
 		case $tag in
-			M ) mainRepoIn $package $purpose $1 ;;
-			A ) AURIn $package $purpose $1 ;;
-			G ) gitIn $gitName $purpose $1 $package ;;
-			L ) [ "$deviceType" = "Laptop" ] && AURIn $package $purpose $1 ;;
+			M ) mainRepoIn "$package" "$purpose" "$1" ;;
+			A ) AURIn "$package" "$purpose" "$1" ;;
+			G ) gitIn "$gitName" "$purpose" "$1" "$package" ;;
+			L ) [ "$deviceType" = "Laptop" ] && AURIn "$package" "$purpose" "$1" ;;
 		esac
-	done < $1
+	done < "$1"
 }
 
 # This script is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
 chooseSoftwareBundle(){
-	bundles=$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1)
+	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 "$(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}')" 3>&1 1>&2 2>&3 3>&1)"
 	installPackages "${bundles}.csv"
 }
 
