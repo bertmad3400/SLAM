@@ -250,6 +250,79 @@ configureInstall(){
 	configureDoas
 }
 
+installYAY(){
+	dialog --infobox "Installing YAY..." 4 50
+	cd /opt
+	git clone https://aur.archlinux.org/yay-git.git
+	chown -R "$username" ./yay-git
+	cd yay-git
+	doas -u "$username" -- makepkg -si
+}
+
+deployDotFiles(){
+	doas -u "$username" -- git clone --bare https://github.com/bertmad3400/dootfiles.git /home/"$username"/.dootfiles.git
+
+	# Overwrite any existing file
+	doas -u "$username" -- /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME reset --hard
+
+	# Deploy the dotfiles
+	doas -u "$username" -- /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME checkout
+}
+
+# The next 3 functions are used for installing software from arch repos, AUR and git. $1 is the package name, $2 is the purpose of the program, $3 is what csv file the package name has been sourced from and $4 is the url of the package for git
+mainRepoIn(){
+	dialog --title "Installing..." --msgbox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2"
+	pacIn "$1"
+}
+
+AURIn(){
+	dialog --title "Installing..." --msgbox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2"
+	doas -u "$username" -- yay -S --noconfirm "$1" > /dev/null
+}
+
+gitIn(){
+	dialog --title "Installing..." --msgbox "Installing $1 from git ($currentPackageCount out of $totalPackageCount from $3). $1 is $2"
+
+	programPath="home/$username/.local/src/$1"
+
+	doas -u "$username" -- git clone "$4" "$programPath"
+
+	make > /dev/null
+	make install > /dev/null
+}
+
+installPackages(){
+	# $1 is the csv file containing packages to install
+	[ -f $1 ] || error "$1 was not found. This seems to be an error with the script, please report it to the developers"
+
+	# Create directory for installing git
+	mkdir -p "/home/$username/.local/src/"
+
+	$totalPackageCount=$(wc -l < $1)
+	while IFS=, read -r tag package purpose
+	do
+		# Used for removing the url part from git package name
+		echo "$package" | grep -q "https:.*\/" && gitName="$(echo "$package" | sed "s/\(^\"\|\"$\)//g")"
+		currentPackageCount=$(expr $currentPackageCount + 1)
+
+		case $tag in
+			M ) mainRepoIn $package $purpose $1 ;;
+			A ) AURIn $package $purpose $1 ;;
+			G ) gitIn $gitName $purpose $1 $package ;;
+			L ) [ "$deviceType" = "Laptop" ] && AURIn $package $purpose $1 ;;
+		esac
+	done < $1
+}
+
+# This script is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
+chooseSoftwareBundle(){
+	bundles=$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1)
+	installPackages "${bundles}.csv"
+}
+
+installSoftware(){
+	installYAY
+}
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
