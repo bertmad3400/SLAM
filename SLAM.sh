@@ -69,9 +69,9 @@ getCredentials(){
 	userPass="$(dialog --no-cancel --passwordbox "Enter password for the new user." 12 65 3>&1 1>&2 2>&3 3>&1)"
 	userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
 
-	while ! [ "$userPass" = "$userPass2" ]
+	while ! [ "$userPass" = "$userPass2" ] || [ "$userPass" = "" ]
 	do
-		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
+		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't matchor you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
 		userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
 	done
 
