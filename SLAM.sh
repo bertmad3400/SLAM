@@ -311,6 +311,7 @@ installPackages(){
 			A ) AURIn "$package" "$purpose" "$1" ;;
 			G ) gitIn "$gitName" "$purpose" "$1" "$package" ;;
 			L ) [ "$deviceType" = "Laptop" ] && AURIn "$package" "$purpose" "$1" ;;
+			* ) dialog --title "What??" --msgbox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now"; sleep 10 ;;
 		esac
 	done < "$1"
 }
