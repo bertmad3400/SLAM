@@ -220,6 +220,10 @@ piecesConfig() {
 	systemctl enable dhcpcd
 	pacIn networkmanager
 	systemctl enable NetworkManager
+
+	# Make pacman and yay colorful and adds eye candy on the progress bar because why not.
+	grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf
+	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 }
 
 configureUsers(){
