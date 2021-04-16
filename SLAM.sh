@@ -318,7 +318,7 @@ installPackages(){
 
 # This script is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
 chooseSoftwareBundle(){
-	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 "$(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}')" 3>&1 1>&2 2>&3 3>&1)"
+	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1)"
 	installPackages "${bundles}.csv"
 }
 
