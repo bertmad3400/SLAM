@@ -6,6 +6,10 @@ error() {
 	exit 1
 }
 
+pacIn(){
+	pacman --noconfirm --needed -S "$1" >/dev/null
+}
+
 # Function for checking if the device is a laptop
 checkLaptop() {
 	[ -d /sys/module/battery ] && { dialog --title "Laptop?" --yesno "The device has been detected to be a laptop. Is that right?" 0 0 && deviceType="Laptop" || deviceType="Desktop"; } || { dialog --title "Desktop?" --yesno "The device has been detected to be a desktop. Is that right?" 0 0 && deviceType="Desktop" || deviceType="Laptop"; }
@@ -214,7 +218,7 @@ piecesConfig() {
 
 	# Configuring network
 	systemctl enable dhcpcd
-	pacman -S networkmanager
+	pacIn networkmanager
 	systemctl enable NetworkManager
 }
 
@@ -245,8 +249,8 @@ configureInstall(){
 # Only used for debugging, will maybe remove
 main() {
 	echo "Refreshing keyrings..."
-	pacman --noconfirm -S archlinux-keyring 2> ErrorLog || error "Make sure to run this script as root, with an internet connection."
-	pacman --noconfirm --needed -S dialog 2> ErrorLog || error "Make sure to run this script as root, with an internet connection."
+	pacman --noconfirm -S archlinux-keyring || error "Make sure to run this script as root, with an internet connection."
+	pacIn dialog || error "Make sure to run this script as root, with an internet connection."
 
 	dialog --title "LET'S GO!" --yesno "With refreshed keyrings and dialog installed we're are ready to take this script for a spin. Please, DO NOT run it unless you fully understand the risk! This was developed by me for me only, and as such there might be errors that worst case could wipe entire drives. You sure you want to continue?" 10 60 || error "User exited"
 
