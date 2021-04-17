@@ -237,10 +237,11 @@ configureUsers(){
 	echo "${username}:${userPass}" | chpasswd
 }
 
-# Give the user permission to run any command as root without password, which is needed to run YAY. Will change to normal perms at script exit
-configureDoas(){
+# Give the user permission to run any command as root without password and the root user permissions to run any command as the user, which is needed to run YAY. Will change to normal perms at script exit
+configurePerms(){
 	echo "permit nopass root as $username" > /etc/doas.conf
-	trap 'echo "permit persist wheel" > /etc/doas.conf' INT TERM EXIT
+	echo "%wheel ALL=(ALL) NOPASSWD: ALL #SLAM" >> /etc/sudoers
+	trap 'echo "permit persist :wheel" > /etc/doas.conf; sed -i "/#SLAM/d" /etc/sudoers; echo "%wheel ALL=(ALL) ALL #LARBS" >> /etc/sudoers' INT TERM EXIT
 }
 
 # Collection function used for configuring new install
@@ -248,7 +249,7 @@ configureInstall(){
 	createSwapFile
 	piecesConfig
 	configureUsers
-	configureDoas
+	configurePerms
 }
 
 installYAY(){
@@ -317,7 +318,7 @@ installPackages(){
 }
 
 # This script is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
-chooseSoftwareBundle(){
+chooseSoftwareBundles(){
 	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1)"
 	installPackages "${bundles}.csv"
 }
