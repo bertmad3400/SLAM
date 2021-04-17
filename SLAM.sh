@@ -273,17 +273,17 @@ deployDotFiles(){
 
 # The next 3 functions are used for installing software from arch repos, AUR and git. $1 is the package name, $2 is the purpose of the program, $3 is what csv file the package name has been sourced from and $4 is the url of the package for git
 mainRepoIn(){
-	dialog --title "Installing..." --msgbox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2"
+	dialog --title "Installing..." --infobox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2" 0 0
 	pacIn "$1"
 }
 
 AURIn(){
-	dialog --title "Installing..." --msgbox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2"
+	dialog --title "Installing..." --infobox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2" 0 0
 	doas -u "$username" -- yay -S --noconfirm "$1" > /dev/null
 }
 
 gitIn(){
-	dialog --title "Installing..." --msgbox "Installing $1 from git ($currentPackageCount out of $totalPackageCount from $3). $1 is $2"
+	dialog --title "Installing..." --infobox "Installing $1 from git ($currentPackageCount out of $totalPackageCount from $3). $1 is $2" 0 0
 
 	programPath="home/$username/.local/src/$1"
 
@@ -307,12 +307,14 @@ installPackages(){
 		echo "$package" | grep -q "https:.*\/" && gitName="$(echo "$package" | sed "s/\(^\"\|\"$\)//g")"
 		currentPackageCount=$(( $currentPackageCount + 1 ))
 
+		echo "$tag" >> debug_output.txt
+
 		case $tag in
 			M ) mainRepoIn "$package" "$purpose" "$1" ;;
 			A ) AURIn "$package" "$purpose" "$1" ;;
 			G ) gitIn "$gitName" "$purpose" "$1" "$package" ;;
 			L ) [ "$deviceType" = "Laptop" ] && AURIn "$package" "$purpose" "$1" ;;
-			* ) dialog --title "What??" --msgbox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now"; sleep 10 ;;
+			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; sleep 10 ;;
 		esac
 	done < "$1"
 }
