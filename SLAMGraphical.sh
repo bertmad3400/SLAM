@@ -12,6 +12,7 @@ pacIn(){
 
 # Function for creating the swap file on the new system
 createSwapFile(){
+	dialog --title "Swapfile" --infobox "Creating and setting up swapfile" 0 0
 	fallocate -l "$swapSize" /swapfile
 	chmod 600 /swapfile
 	mkswap /swapfile
@@ -22,6 +23,16 @@ createSwapFile(){
 
 # Function for configuring all these small things that don't really fit elsewhere
 piecesConfig() {
+	
+	dialog --title "Configuring network" --infobox "Installing and enabling dhcpcd and NetworkManager" 0 0
+	# Configuring network
+	pacIn dhcpcd
+	systemctl enable dhcpcd
+	pacIn networkmanager
+	systemctl enable NetworkManager
+
+	dialog --title "Configuring..." --infobox "Configuring some beeps and boops. Shouldn't take long"
+
 	# Setting the local timezone
 	ln -sf /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
 
@@ -51,10 +62,6 @@ piecesConfig() {
 		::1		localhost
 		127.0.1.1	$hostname.local	$hostname" | sed -e 's/^\s*//' >> /etc/hosts
 
-	# Configuring network
-	systemctl enable dhcpcd
-	pacIn networkmanager
-	systemctl enable NetworkManager
 
 	# Make pacman and yay colorful and adds eye candy on the progress bar because why not.
 	grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf

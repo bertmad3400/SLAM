@@ -1,6 +1,7 @@
 #!/bin/sh
 
-dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60 && dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null 2> ErrorLog 
+dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60
+dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null 2> ErrorLog
 
 
 # For properly formating the newly cleared drive

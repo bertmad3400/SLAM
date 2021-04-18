@@ -23,7 +23,7 @@ checkBootMode() {
 
 # Function for choosing which drive to install on
 locateInstallDrive() {
-	drive="$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 0 0 0 $( for drive in $(lsblk -dno NAME); do echo /dev/"$drive"; done) 3>&2 2>&1 1>&3)"
+	drive="$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 0 0 0 $( for drive in $(lsblk -dno NAME); do echo /dev/"$drive"; done) 3>&2 2>&1 1>&3 || error "User exited)"
 }
 
 getCredentials(){
@@ -62,7 +62,7 @@ getCredentials(){
 
 # This script is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
 chooseSoftwareBundles(){
-	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1)"
+	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 || error "User exited)"
 }
 
 # Determine needed size of swap file based on RAM size + 2 GB
