@@ -1,28 +1,30 @@
-TAG	,Name in repo or git url			,Purpose (verb phrase)
-L	,backlight_control				,for controlling the screen brightness.
-M	,highlight					,for syntax highlighting of STDIN.
-M	,neovim						,for editing text based files.
-M	,firefox					,browse the web.
-M	,sxiv						,for viewing images.
-M	,dunst						,for getting notifications.
-M	,man-db						,to read man pages.
-M	,pulseaudio-alsa				,for having sound on your system.
-M	,pulsemixer					,for controlling sound on your system.
-M	,unclutter					,for hidding inactive mouse.
-M	,xorg-xwininfo					,for querying information about windows.
-M	,xorg-server					,as a graphical server
-M	,xorg-init					,for starting the graphical server
-M	,picom						,as a X compositor
-M	,git						,using git
-M	,zsh						,the shell used by default
-M	,x11-ssh-askpass				,for allowing use of ssh keys from agent
-M	,slock						,for locking the screen
-M	,xwallpaper					,for setting the background
-M	,noto-fonts-emoji				,a font for emoji
-M	,xclip						,allowing to copy and paste from CLI
-A	,zsh-fast-syntax-highlighting			,syntax highlighting in ZSH
-A	,zsh-you-should-use				,suggesting aliases in ZSH
-G	,https://github.com/bertmad3400/dwm.git 	,my build of DWM
-G	,https://github.com/bertmad3400/st.git		,my build of ST
-G	,https://git.suckless.org/dmenu			,suckless build of DMENU
-
+L,backlight_control,for controlling the screen brightness.
+M,highlight,for syntax highlighting of STDIN.
+M,neovim,for editing text based files.
+M,firefox,browse the web.
+M,sxiv,for viewing images.
+M,dunst,for getting notifications.
+M,man-db,to read man pages.
+M,pulseaudio,for having sound on your system.
+M,pulseaudio-alsa,needed to make pulseaudio work with bluetooth
+M,pulseaudio-bluetooth,for making pulseaudio work with bluetooth
+M,bluez-utils,cli for bluetooth
+M,pulsemixer,for controlling sound on your system.
+M,pavucontrol, graphical interface for pulseaudio
+M,unclutter,for hidding inactive mouse.
+M,xorg-xwininfo,for querying information about windows.
+M,xorg-server,as a graphical server
+M,xorg-init,for starting the graphical server
+M,picom,as a X compositor
+M,zsh,the shell used by default
+M,x11-ssh-askpass,for allowing use of ssh keys from agent
+M,slock,for locking the screen
+M,xwallpaper,for setting the background
+M,noto-fonts-emoji,a font for emoji
+M,xclip,allowing to copy and paste from CLI
+M,scrot,for capturing screenshots
+A,zsh-fast-syntax-highlighting,syntax highlighting in ZSH
+A,zsh-you-should-use,suggesting aliases in ZSH
+G,https://github.com/bertmad3400/dwm.git,my build of DWM
+G,https://github.com/bertmad3400/st.git,my build of ST
+G,https://git.suckless.org/dmenu,suckless build of DMENU
