@@ -168,5 +168,8 @@ installSoftware(){
 	for bundle in bundles; do installPackages $bundle; done
 }
 
+echo "Refreshing the keyrings for the new system. Probably not needed, but better safe than sorry"
+pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't be refreshed. You unfortunatly probably need to run the script again"
+
 configureInstall
 installSoftware
