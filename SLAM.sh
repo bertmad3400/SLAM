@@ -7,7 +7,7 @@ cleanLogs() {
 }
 
 error(){
-	echo "Error: $@" 1>&2
+	echo "Error: $*" | tee -a logs/errorLog 1>&2
 	exit 1
 }
 
