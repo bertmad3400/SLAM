@@ -1,9 +1,17 @@
 #!/bin/sh
 
+cleanLogs() {
+	echo "Cleaning logs"
+	rm -rf ./logs
+	mkdir -p ./logs/installLogs
+}
+
 error(){
 	echo "Error: $@" 1>&2
 	exit 1
 }
+
+cleanLogs
 
 echo "Refreshing keyrings..."
 pacman --noconfirm -S archlinux-keyring || error "Make sure to run this script as root, with an internet connection."
