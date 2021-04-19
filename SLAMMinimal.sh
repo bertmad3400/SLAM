@@ -1,12 +1,12 @@
 #!/bin/sh
 
 error() {
-	echo "Error: $*" 1>&2
+	echo "Error: $*" | tee -a logs/errorLog 1>&2
 	exit 1
 }
 
 dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60
-dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null 2> ErrorLog
+dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null 2>> logs/errorLog 
 
 # For properly formating the newly cleared drive
 # Will create on boot partition (based on the result from checkBootMode) and then one big root partition. Swap is in a swapfile
@@ -27,6 +27,7 @@ partitionDrive(){
 						# Chosing the default partition number
 						# Default first sector, let it start at the of free space on disk
 						# Default last sector, letting it take the rest of the space
+					p	# Printing the partition table just before writing, for use in logfile
 					w	# Write changes to disk "
 
 	# For setting the disklabel to DOS for BIOS booting
@@ -38,27 +39,27 @@ partitionDrive(){
 						# Chosing the default partition number
 						# Default first sector, let it start at the start of free space on disk
 						# Default last sector, letting it take the rest of the space
+					p	# Printing the partition table just before writing, for use in logfile
 					w	# Write the changes to the drive "
 	fi
 
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk "$drive"
+	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk "$drive" 1> logs/partitionLog 2>> logs/errorLog 
 	$partitionScheme
 	EOF
 }
 
 createFS(){
-
 	dialog --title "Creating FS" --infobox "Creating the filesystem for $drive ..." 5 60
 	if [ "$bootMode" = "UEFI" ]
 	then
-		yes | mkfs.fat -F32 "${drive}1"
-		yes | mkfs.ext4 "${drive}2"
+		yes | mkfs.fat -F32 "${drive}1" 1>> logs/partitionLog 2>> logs/errorlog
+		yes | mkfs.ext4 "${drive}2" 1>> logs/partitionLog 2>> logs/errorlog
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		yes | mkfs.ext4 "${drive}1"
-	fi
+		yes | mkfs.ext4 "${drive}1" 1>> logs/partitionLog 2>> logs/errorlog
 
+	fi
 }
 
 mountDrive(){
@@ -66,11 +67,11 @@ mountDrive(){
 	
 	if [ "$bootMode" = "UEFI" ]
 	then
-		mount "${drive}2" /mnt
+		mount "${drive}2" /mnt 2>> logs/errorLog
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		mount "${drive}1" /mnt
+		mount "${drive}1" /mnt 2>> logs/errorLog
 	fi
 }
 
@@ -80,10 +81,10 @@ finishDrive () {
 	createFS
 	mountDrive
 
-	genfstab -p -U /mnt >> /mnt/etc/fstab
+	genfstab -p -U /mnt >> /mnt/etc/fstab 2>> logs/errorLog
 
 	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware, dialog, git and doas" 5 60
-	pacstrap /mnt base base-devel linux linux-firmware dialog git doas
+	pacstrap /mnt base base-devel linux linux-firmware dialog git doas 1> logs/installLogs/pacstrapLog
 }
 
 finishDrive && cp ./SLAMGraphical.sh /mnt && arch-chroot /mnt ./SLAMGraphical.sh 
