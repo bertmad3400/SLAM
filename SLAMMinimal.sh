@@ -1,7 +1,7 @@
 #!/bin/sh
 
 error() {
-	echo "Error: $*" | tee -a logs/errorLog 1>&2
+	echo "Error: $@" | tee -a logs/errorLog 1>&2
 	exit 1
 }
 
@@ -84,7 +84,7 @@ finishDrive () {
 	genfstab -p -U /mnt >> /mnt/etc/fstab 2>> logs/errorLog
 
 	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware, dialog, git and doas" 5 60
-	pacstrap /mnt base base-devel linux linux-firmware dialog git doas 1> logs/installLogs/pacstrapLog
+	pacstrap /mnt base base-devel linux linux-firmware dialog git doas 1> logs/installLogs/pacstrapLog 2>> logs/errorLog
 }
 
 finishDrive && cp ./SLAMGraphical.sh /mnt && arch-chroot /mnt ./SLAMGraphical.sh 
