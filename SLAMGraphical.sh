@@ -168,6 +168,25 @@ installSoftware(){
 	for bundle in bundles; do installPackages $bundle; done
 }
 
+configureBootloader(){
+	if [ "$bootMode" = "UEFI" ]
+	then
+		echo "Creating BIOS bootloader" 1> logs/bootloaderLogs
+		pacIn efibootmgr grub
+		mkdir /boot/efi 1>> logs/bootloaderLogs 2>> errorLog
+		mount "${drive}1" /boot/efi 1>> logs/bootloaderLogs 2>> errorLog
+		grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi 1>> logs/bootloaderLogs 2>> errorLog
+		grub-mkconfig -o /boot/grub/grub.cfg 1>> logs/bootloaderLogs 2>> errorLog
+
+	elif [ "$bootMode" = "BIOS" ]
+	then
+		echo "Creating BIOS bootloader" 1> logs/bootloaderLogs
+		pacIn grub
+		grub-install "$drive" 1>> logs/bootloaderLogs 2>> errorLog
+		grub-mkconfig -o /boot/grub/grub.cfg 1>> logs/bootloaderLogs 2>> errorLog
+	fi
+}
+
 echo "Refreshing the keyrings for the new system. Probably not needed, but better safe than sorry"
 pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't be refreshed. You unfortunatly probably need to run the script again"
 
