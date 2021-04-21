@@ -162,7 +162,7 @@ installSoftware(){
 	installYAY
 	deployDotFiles
 	cd /
-	for bundle in bundles; do installPackages "${bundle}.csv"; done
+	for bundle in $bundles; do installPackages "${bundle}.csv"; done
 }
 
 configureBootloader(){
