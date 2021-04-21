@@ -1,12 +1,12 @@
 #!/bin/sh
 
 error() {
-	echo "Error: $@" | tee -a logs/errorLog 1>&2
+	echo "Error: $@"
 	exit 1
 }
 
 dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60
-dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null 2>> logs/errorLog 
+dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null
 
 # For properly formating the newly cleared drive
 # Will create on boot partition (based on the result from checkBootMode) and then one big root partition. Swap is in a swapfile
@@ -43,7 +43,7 @@ partitionDrive(){
 					w	# Write the changes to the drive "
 	fi
 
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk "$drive" 1> logs/partitionLog 2>> logs/errorLog 
+	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk "$drive"
 	$partitionScheme
 	EOF
 }
@@ -52,12 +52,12 @@ createFS(){
 	dialog --title "Creating FS" --infobox "Creating the filesystem for $drive ..." 5 60
 	if [ "$bootMode" = "UEFI" ]
 	then
-		yes | mkfs.fat -F32 "${drive}1" 1>> logs/partitionLog 2>> logs/errorlog
-		yes | mkfs.ext4 "${drive}2" 1>> logs/partitionLog 2>> logs/errorlog
+		yes | mkfs.fat -F32 "${drive}1"
+		yes | mkfs.ext4 "${drive}2"
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		yes | mkfs.ext4 "${drive}1" 1>> logs/partitionLog 2>> logs/errorlog
+		yes | mkfs.ext4 "${drive}1"
 
 	fi
 }
@@ -67,11 +67,11 @@ mountDrive(){
 	
 	if [ "$bootMode" = "UEFI" ]
 	then
-		mount "${drive}2" /mnt 2>> logs/errorLog
+		mount "${drive}2" /mnt
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		mount "${drive}1" /mnt 2>> logs/errorLog
+		mount "${drive}1" /mnt
 	fi
 }
 
@@ -81,10 +81,10 @@ finishDrive () {
 	createFS
 	mountDrive
 
-	genfstab -p -U /mnt >> /mnt/etc/fstab 2>> logs/errorLog
+	genfstab -p -U /mnt >> /mnt/etc/fstab
 
 	dialog --title "Using pacstrap" --infobox "Installing base, base-devel, linux, linux-firmware, dialog, git and doas" 5 60
-	pacstrap /mnt base base-devel linux linux-firmware dialog git doas 1> logs/installLogs/pacstrapLog 2>> logs/errorLog
+	pacstrap /mnt base base-devel linux linux-firmware dialog git doas
 }
 
 finishDrive && cp ./SLAMGraphical.sh /mnt && arch-chroot /mnt ./SLAMGraphical.sh 

@@ -3,7 +3,7 @@
 set -a
 
 error() {
-	echo "Script error: $@" | tee -a logs/errorLog 1>&2
+	echo "Script error: $@"
 	exit 1
 }
 
