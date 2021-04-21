@@ -106,10 +106,10 @@ deployDotFiles(){
 	doas -u "$username" -- git clone --bare https://github.com/bertmad3400/dootfiles.git "/home/$username/.dootfiles.git"
 
 	# Overwrite any existing file
-	doas -u "$username" -- /usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" reset --hard
+	doas -u "$username" -- /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" reset --hard
 
 	# Deploy the dotfiles
-	doas -u "$username" -- /usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" checkout
+	doas -u "$username" -- /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" checkout
 }
 
 # The next 3 functions are used for installing software from arch repos, AUR and git. $1 is the package name, $2 is the purpose of the program, $3 is what csv file the package name has been sourced from and $4 is the url of the package for git
