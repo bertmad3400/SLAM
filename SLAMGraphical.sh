@@ -25,13 +25,10 @@ createSwapFile(){
 piecesConfig() {
 	
 	dialog --title "Configuring communcation" --infobox "Installing and enabling dhcpcd, NetworkManager and bluez" 0 0
+
 	# Configuring network
-	pacIn dhcpcd
-	systemctl enable dhcpcd
-	pacIn networkmanager
-	systemctl enable NetworkManager
-	pacIn bluez
-	systemctl enable bluetooth
+	pacIn dhcpcd networkmanager bluez
+	systemctl enable dhcpcd NetworkManager bluetooth
 
 	dialog --title "Configuring..." --infobox "Configuring some beeps and boops. Shouldn't take long"
 
