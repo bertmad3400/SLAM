@@ -87,4 +87,4 @@ finishDrive () {
 	pacstrap /mnt base base-devel linux linux-firmware dialog git doas
 }
 
-finishDrive && cp ./SLAMGraphical.sh /mnt && arch-chroot /mnt ./SLAMGraphical.sh 
+finishDrive && cp ./SLAMGraphical.sh /mnt && for bundle in $bundles; do cp "${bundle}.csv" /mnt; done && arch-chroot /mnt ./SLAMGraphical.sh
