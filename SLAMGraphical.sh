@@ -145,7 +145,7 @@ installPackages(){
 	while IFS=, read -r tag package purpose
 	do
 		# Used for removing the url part from git package name
-		echo "$package" | grep -q "https:.*\/" && gitName="$(echo "$package" | sed "s/\(^\"\|\"$\)//g")"
+		echo "$package" | grep -q "https:.*\/" && gitName="$(echo "$package" | sed "s/.*\///g")"
 		currentPackageCount=$(( $currentPackageCount + 1 ))
 
 		case $tag in
