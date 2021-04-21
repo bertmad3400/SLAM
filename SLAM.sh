@@ -1,17 +1,9 @@
 #!/bin/sh
 
-cleanLogs() {
-	echo "Cleaning logs"
-	rm -rf ./logs
-	mkdir -p ./logs/installLogs
-}
-
 error(){
-	echo "Error: $*" | tee -a logs/errorLog 1>&2
+	echo "Error: $@" 
 	exit 1
 }
-
-cleanLogs
 
 echo "Refreshing keyrings..."
 # The reason for using -Sy is that there isn't space on the install disk for a full upgrade, but you need to update databases
