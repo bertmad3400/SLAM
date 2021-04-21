@@ -94,11 +94,12 @@ configureInstall(){
 
 installYAY(){
 	dialog --infobox "Installing YAY..." 4 50
-	cd /opt || error "/Opt apparently didn't exist"
+	mkdir /tmp/yay
+	cd /tmp/yay || error "/tmp/yay apparently didn't exist"
 	git clone https://aur.archlinux.org/yay-git.git
 	chown -R "$username" ./yay-git
 	cd yay-git || error "Newly created yay-git folder didn't exist. This is probably a problem with the script, please report it to the developer"
-	doas -u "$username" -- makepkg -si
+	doas -u "$username" -- makepkg -si --noconfirm
 }
 
 deployDotFiles(){
@@ -160,7 +161,8 @@ installPackages(){
 installSoftware(){
 	installYAY
 	deployDotFiles
-	for bundle in bundles; do installPackages $bundle; done
+	cd /
+	for bundle in bundles; do installPackages "${bundle}.csv"; done
 }
 
 configureBootloader(){
