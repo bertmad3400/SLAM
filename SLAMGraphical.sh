@@ -7,7 +7,7 @@ error() {
 }
 
 pacIn(){
-	pacman --noconfirm --needed -S "$*" 1>> logs/installLogs/pacman
+	pacman --noconfirm --needed -S "$*"
 }
 
 # Function for creating the swap file on the new system
@@ -153,7 +153,7 @@ installPackages(){
 			A ) AURIn "$package" "$purpose" "$1" ;;
 			G ) gitIn "$gitName" "$purpose" "$1" "$package" ;;
 			L ) [ "$deviceType" = "Laptop" ] && AURIn "$package" "$purpose" "$1" ;;
-			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> logs/installLogs/missingPackage; sleep 10 ;;
+			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 		esac
 	done < "$1"
 }
