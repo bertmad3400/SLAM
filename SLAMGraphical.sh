@@ -7,7 +7,7 @@ error() {
 }
 
 pacIn(){
-	pacman --noconfirm --needed -S "$*"
+	pacman --noconfirm --needed -S $*
 }
 
 # Function for creating the swap file on the new system
