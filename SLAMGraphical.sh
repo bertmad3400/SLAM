@@ -117,7 +117,14 @@ deployDotFiles(){
 }
 
 gitIn(){
-	programPath="${gitPath}/${2}/"
+
+	echo "$1" | grep -q "https:.*\/" || error "The git package $1 doesn't seem to be a url"
+	packageName="$(echo "$1" | sed "s/^.*\///g;s/\..*//g" )"
+
+	programPath="${gitPath}/${packageName}/"
+
+	# Making sure the user has write perms to the folder used for git source code
+	chown "$username" "$gitPath"
 
 	doas -u "$username" -- git clone "$1" "$programPath"
 
@@ -140,8 +147,6 @@ installPackages(){
 	totalPackageCount="$(wc -l < "$1")"
 	while IFS=, read -r tag package purpose
 	do
-		# Used for removing the url part from git package name
-		echo "$package" | grep -q "https:.*\/" && $gitUrl=$package && $package="$(echo "$package" | sed "s/.*\///g")"
 		currentPackageCount=$(( $currentPackageCount + 1 ))
 
 		dialog --title "Installing..." --infobox "Installing $package from $TAG ($currentPackageCount out of $totalPackageCount from $1). $package is $purpose" 0 0
@@ -149,7 +154,7 @@ installPackages(){
 		case $tag in
 			M ) pacIn $package;;
 			A ) doas -u "$username" -- yay -S --noconfirm "$package";;
-			G ) gitIn "$gitUrl" "$package" ;;
+			G ) gitIn "$package" ;;
 			L ) [ "$deviceType" = "Laptop" ] && doas -u "$username" -- yay -S --noconfirm $package;;
 			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 		esac
@@ -161,7 +166,7 @@ installSoftware(){
 	deployDotFiles
 	cd /
 	# The path in which git will clone repos
-	gitPath="home/$username/.local/src"
+	gitPath="/home/$username/.local/src"
 	mkdir -p "$gitPath"
 	for bundle in $bundles; do installPackages "${bundle}.csv"; done
 }
