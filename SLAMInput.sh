@@ -85,10 +85,14 @@ verifyAndProcced() {
 	elif [ "$driveSize" -le 4294967296 ];
 	then
 		dialog --title "Very little space" --yes-label "I know what I'm doing" --no-label "Whoops, MB, abort!" --yesno "The selected drive, $drive, seem to be less than 4 GiB in size. This may be enough, but is very much an unsupported use-case for this script as there's a good chance that it's not. Are you sure you want to continue?" 8 60 || error "User exited as there is less than 4 GiB on the drive"
+
+	# Making sure that the swap file doesn't take up more than half of the drive
+	elif [ $(( swapSize * 2 )) -le "$driveSize" ];
+	then
+		dialog --title "Swap problems" --yes-label "Disable it" --no-label "Abort installation" --yesno "It seems like the swap file is bigger half of the drive, and as such the installation unfortunatly isn't able to continue. If you want to continue though, you can completly disable the swapfile?" 0 0 && swapSize=0 || error "User exited as the swap file was too big for the drive"
 	fi
 
-
-	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then wipe it
+	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then procced with the script, which will wipe the drive
 	dialog --title "WARNING!" --defaultno --yes-label "NUKE IT!" --no-label "Please don't..." --yesno "This script is readying to NUKE $drive. ARE YOU SURE YOU WANT TO CONTINUE?"  10 60 || error "User apparently didn't wan't to massacre $drive"
 }
 

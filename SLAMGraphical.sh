@@ -12,13 +12,17 @@ pacIn(){
 
 # Function for creating the swap file on the new system
 createSwapFile(){
-	dialog --title "Swapfile" --infobox "Creating and setting up swapfile" 0 0
-	fallocate -l "$swapSize" /swapfile
-	chmod 600 /swapfile
-	mkswap /swapfile
-	swapon /swapfile
-	cp /etc/fstab /etc/fstab.back
-	echo '/swapfile none swap sw 0 0' >> /etc/fstab
+	# Making sure the size of the swap file is bigger than 1 byte. Would be 0 bytes if disabled due to drive size in SLAMInput.sh
+	if [ 1 -le "$swapSize" ]
+	then
+		dialog --title "Swapfile" --infobox "Creating and setting up swapfile" 0 0
+		fallocate -l "$swapSize" /swapfile
+		chmod 600 /swapfile
+		mkswap /swapfile
+		swapon /swapfile
+		cp /etc/fstab /etc/fstab.back
+		echo '/swapfile none swap sw 0 0' >> /etc/fstab
+	fi
 }
 
 # Function for configuring all these small things that don't really fit elsewhere
