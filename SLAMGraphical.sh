@@ -116,23 +116,12 @@ deployDotFiles(){
 	doas -u "$username" -- /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" checkout
 }
 
-# The next 3 functions are used for installing software from arch repos, AUR and git. $1 is the package name, $2 is the purpose of the program, $3 is what csv file the package name has been sourced from and $4 is the url of the package for git
-mainRepoIn(){
-	dialog --title "Installing..." --infobox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2" 0 0
-	pacIn "$1"
-}
-
-AURIn(){
-	dialog --title "Installing..." --infobox "Installing $1 from main repo ($currentPackageCount out of $totalPackageCount from $3). $1 is $2" 0 0
-	doas -u "$username" -- yay -S --noconfirm "$1"
-}
-
 gitIn(){
-	dialog --title "Installing..." --infobox "Installing $1 from git ($currentPackageCount out of $totalPackageCount from $3). $1 is $2" 0 0
+	programPath="home/$username/.local/src/$2"
 
-	programPath="home/$username/.local/src/$1"
+	doas -u "$username" -- git clone "$1" "$programPath"
 
-	doas -u "$username" -- git clone "$4" "$programPath"
+	cd "$programPath"
 
 	make
 	make install
@@ -145,18 +134,23 @@ installPackages(){
 	# Create directory for installing git
 	mkdir -p "/home/$username/.local/src/"
 
+	# Reset count of numbers of packages
+	currentPackageCount=0
+
 	totalPackageCount="$(wc -l < "$1")"
 	while IFS=, read -r tag package purpose
 	do
 		# Used for removing the url part from git package name
-		echo "$package" | grep -q "https:.*\/" && gitName="$(echo "$package" | sed "s/.*\///g")"
+		echo "$package" | grep -q "https:.*\/" && $gitUrl=$package && $package="$(echo "$package" | sed "s/.*\///g")"
 		currentPackageCount=$(( $currentPackageCount + 1 ))
 
+		dialog --title "Installing..." --infobox "Installing $package from $TAG ($currentPackageCount out of $totalPackageCount from $1). $package is $purpose" 0 0
+
 		case $tag in
-			M ) mainRepoIn "$package" "$purpose" "$1" ;;
-			A ) AURIn "$package" "$purpose" "$1" ;;
-			G ) gitIn "$gitName" "$purpose" "$1" "$package" ;;
-			L ) [ "$deviceType" = "Laptop" ] && AURIn "$package" "$purpose" "$1" ;;
+			M ) pacIn $package;;
+			A ) doas -u "$username" -- yay -S --noconfirm "$package";;
+			G ) gitIn "$gitUrl" "$package" ;;
+			L ) [ "$deviceType" = "Laptop" ] && doas -u "$username" -- yay -S --noconfirm $package;;
 			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 		esac
 	done < "$1"
