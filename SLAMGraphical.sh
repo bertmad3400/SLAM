@@ -34,7 +34,7 @@ piecesConfig() {
 	pacIn dhcpcd networkmanager bluez
 	systemctl enable dhcpcd NetworkManager bluetooth
 
-	dialog --title "Configuring..." --infobox "Configuring some beeps and boops. Shouldn't take long"
+	dialog --title "Configuring..." --infobox "Configuring some beeps and boops. Shouldn't take long" 0 0
 
 	# Setting the local timezone
 	ln -sf /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
@@ -97,9 +97,9 @@ configureInstall(){
 }
 
 installYAY(){
-	dialog --infobox "Installing YAY..." 4 50
+	dialog --title "YAY install" --infobox "Currently in the proccess of making and installing YAY.." 0 0
 	mkdir /tmp/yay
-	cd /tmp/yay || error "/tmp/yay apparently didn't exist"
+	cd /tmp/yay || error "Newly created folder /tmp/yay didn't exist. This is probably a problem with the script, please report it to the developer"
 	git clone https://aur.archlinux.org/yay-git.git
 	chown -R "$username" ./yay-git
 	cd yay-git || error "Newly created yay-git folder didn't exist. This is probably a problem with the script, please report it to the developer"
@@ -172,7 +172,7 @@ installSoftware(){
 configureBootloader(){
 	if [ "$bootMode" = "UEFI" ]
 	then
-		echo "Creating BIOS bootloader"
+		dialog --title "Bootloader" --infobox "Creating UEFI bootloader using GRUB..." 0 0
 		pacIn efibootmgr grub
 		mkdir /boot/efi
 		mount "${drive}1" /boot/efi
@@ -181,15 +181,16 @@ configureBootloader(){
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		echo "Creating BIOS bootloader"
+		dialog --title "Bootloader" --infobox "Creating BIOS bootloader using GRUB..." 0 0
 		pacIn grub
 		grub-install "$drive"
 		grub-mkconfig -o /boot/grub/grub.cfg
 	fi
 }
 
-echo "Refreshing the keyrings for the new system. Probably not needed, but better safe than sorry"
+dialog --title "Refreshing keyrings..." --infobox "Refreshing the keyrings on the new system. This is probably no needed, but is done to make sure that everything is going to go smoothly" 0 0
 pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't be refreshed. You unfortunatly probably need to run the script again"
 
 configureInstall
 installSoftware
+configureBootloader
