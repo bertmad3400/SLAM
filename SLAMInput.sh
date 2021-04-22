@@ -16,9 +16,9 @@ checkLaptop() {
 
 # Function for checking whether it's booted as UEFI or BIOS
 checkBootMode() {
-	ls /sys/firmware/efi/efivars && { dialog --title "Boot-mode" --yesno "The detected boot mode is UEFI. Is that right?" 0 0 && bootMode="UEFI" || bootMode="BIOS"; } || { dialog --title "Boot-mode" --yesno "The detected boot-mode is BIOS. Is that right?" 0 0 && bootMode="BIOS" || bootMode="UEFI"; }
+	ls /sys/firmware/efi/efivars && { dialog --title "Boot-mode" --yesno "The detected boot mode is UEFI. Do you want the system to be installed as UEFI?" 0 0 && bootMode="UEFI" || bootMode="BIOS"; } || { dialog --title "Boot-mode" --yesno "The detected boot-mode is BIOS. Do you want the system to be install as BIOS?" 0 0 && bootMode="BIOS" || bootMode="UEFI"; }
 
-	dialog --title "Boot-mode" --msgbox "The boot-mode has been set to $bootMode" 6 39
+	dialog --title "Boot-mode" --msgbox "The system will be installed as $bootMode" 6 39
 }
 
 # Function for choosing which drive to install on
@@ -31,7 +31,7 @@ getCredentials(){
 	rootPass2=$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)
 	while [ "$rootPass" != "$rootPass2" ] || [ "$rootPass" = "" ]
 	do
-		rootPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't matchor you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
+		rootPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match or you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
 		rootPass2="$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)"
 	done
 
@@ -47,7 +47,7 @@ getCredentials(){
 
 	while ! [ "$userPass" = "$userPass2" ] || [ "$userPass" = "" ]
 	do
-		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't matchor you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
+		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match or you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
 		userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
 	done
 
