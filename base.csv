@@ -14,9 +14,10 @@ M,pavucontrol, graphical interface for pulseaudio
 M,unclutter,for hidding inactive mouse.
 M,xorg-xwininfo,for querying information about windows.
 M,xorg-server,as a graphical server
-M,xorg-init,for starting the graphical server
+M,xorg-xinit,for starting the graphical server
 M,picom,as a X compositor
 M,zsh,the shell used by default
+M,openssh,for using ssh
 M,x11-ssh-askpass,for allowing use of ssh keys from agent
 M,slock,for locking the screen
 M,xwallpaper,for setting the background
