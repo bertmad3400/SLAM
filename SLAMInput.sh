@@ -87,7 +87,7 @@ verifyAndProcced() {
 		dialog --title "Very little space" --yes-label "I know what I'm doing" --no-label "Whoops, MB, abort!" --yesno "The selected drive, $drive, seem to be less than 4 GiB in size. This may be enough, but is very much an unsupported use-case for this script as there's a good chance that it's not. Are you sure you want to continue?" 8 60 || error "User exited as there is less than 4 GiB on the drive"
 
 	# Making sure that the swap file doesn't take up more than half of the drive
-	elif [ $(( swapSize * 2 )) -le "$driveSize" ];
+	elif [ "$driveSize" -le $(( swapSize * 2 )) ];
 	then
 		dialog --title "Swap problems" --yes-label "Disable it" --no-label "Abort installation" --yesno "It seems like the swap file is bigger half of the drive, and as such the installation unfortunatly isn't able to continue. If you want to continue though, you can completly disable the swapfile?" 0 0 && swapSize=0 || error "User exited as the swap file was too big for the drive"
 	fi
