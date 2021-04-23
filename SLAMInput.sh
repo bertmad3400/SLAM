@@ -62,7 +62,7 @@ getCredentials(){
 
 # SLAMGraphical is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
 chooseSoftwareBundles(){
-	bundles="$(dialog --title "Bundle install" --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 || error "User exited")"
+	bundles="$(dialog --title "Bundle install" --no-cancel --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 )"
 }
 
 # Determine needed size of swap file based on RAM size + 2 GB
@@ -79,7 +79,7 @@ verifyAndProcced() {
 	# Completly aborting if there isn't enough space
 	if [ "$driveSize" -le 1073741824 ];
 	then
-		dialog --title "Too small" --msgbox "The selected drive, $drive, seem to be less than 1 GiB in size. This is simply to little space for the installation to continue, and as such, it will not end" 8 50; error "too little space on $drive"
+		dialog --title "Too small" --msgbox "The selected drive, $drive, seem to be less than 1 GiB in size. This is simply to little space for the installation to continue, and as such, it will now end" 8 50; error "too little space on $drive"
 	
 	# Warning the user if there's less than 4 GiB available on the drive
 	elif [ "$driveSize" -le 4294967296 ];
