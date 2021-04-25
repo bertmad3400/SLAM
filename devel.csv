@@ -6,3 +6,6 @@ M,htop,for monitoring system
 M,usbutils,for checking in on usb devices
 M,python,an interpreter for python
 M,xterm,backup terminal
+M,openssh,for using ssh
+M,x11-ssh-askpass,for allowing use of ssh keys from agent
+M,highlight,for syntax highlighting of STDIN.
