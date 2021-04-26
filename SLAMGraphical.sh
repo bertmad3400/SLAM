@@ -171,6 +171,24 @@ installSoftware(){
 	for bundle in $bundles; do installPackages "${bundle}.csv"; done
 }
 
+configureFirefox(){
+	dialog --title "Firefox profile" --infobox "Creating new default firefox profile optimized for a private browsing experience" 5 30
+
+	# Make sure the script is in the right folder
+	cd "/home/$username/.mozilla/firefox/"
+
+	# Create the new firefox profile
+	firefox -CreateProfile privacy
+
+	# Move the needed files into the folder
+	cp "/firefoxProfile/*" "/home/$username/.mozilla/firefox/*.privacy"
+
+	# Make the new profile the default by replacing the name of the default entry in profiles with the one ending in .privacy and create a backup with the i option
+	sed -i.bak "s/Default=.*\..*/$(grep '[a-zA-Z0-9]*\.privacy$' profiles.ini)/" profiles.ini
+
+
+}
+
 configureBootloader(){
 	if [ "$bootMode" = "UEFI" ]
 	then
@@ -195,4 +213,5 @@ pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't 
 
 configureInstall
 installSoftware
+pacman -Qs firefox > /dev/null && configureFirefox
 configureBootloader
