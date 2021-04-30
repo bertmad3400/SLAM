@@ -64,7 +64,7 @@ createFS(){
 
 mountDrive(){
 	dialog --title "Mounting drive..." --infobox "Mounting $drive at /mnt" 5 60
-	
+
 	if [ "$bootMode" = "UEFI" ]
 	then
 		mount "${drive}2" /mnt
@@ -87,4 +87,27 @@ finishDrive () {
 	pacstrap /mnt base base-devel linux linux-firmware dialog git doas
 }
 
-finishDrive && cp ./SLAMGraphical.sh /mnt && for bundle in $bundles; do cp "${bundle}.csv" /mnt; done && cp firefoxProfile /mnt && arch-chroot /mnt ./SLAMGraphical.sh
+# Functions for copying over files to new installation so that they can be run inside chroot
+copyFiles (){
+	# Create directory in the temp directory
+	SLAMDir="/mnt/tmp/SLAM/"
+	mkdir "$SLAMDir"
+
+	# Add trap for cleanup
+	trap "rm -rf $SLAMDir" INT TERM EXIT
+
+	# Copy over the script the will be run in chroot
+	cp ./SLAMGraphical.sh /mnt
+
+	# Copy over the needed bundles
+	for bundle in $bundles
+	do
+		cp "${bundle}.csv" /mnt
+	done
+
+	# Copy over custom profile for firefox
+	cp ./firefoxProfile /mnt
+
+}
+
+finishDrive && copyFiles && arch-chroot /mnt ./SLAMGraphical.sh
