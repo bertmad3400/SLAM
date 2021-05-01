@@ -101,10 +101,13 @@ copyFiles (){
 	# Copy over the script the will be run in chroot
 	cp ./SLAMGraphical.sh "$SLAMDir/"
 
-	# Copy over the needed bundles
+	# Copy over the needed bundles and their depency files
 	for bundle in $bundles
 	do
-		cp "${bundle}.csv" /mnt
+		# Get the full path to the file stored in CSVFiles folder
+		filepath="$(find . -name "${bundle}.csv")"
+		# Copy over the file itself
+		cp "$filepath" "${SLAMDir}/CSVFiles/"
 	done
 
 	# Copy over custom profile for firefox

@@ -1,0 +1,8 @@
+M,arp-scap,for mapping networks with ARP
+M,metasploit,framework for CVE's
+M,aircrack-ng,for manual wifi penetration
+M,sqlmap,for exploiting SQL injection
+M,wireshark-qt,for analysing traffic
+M,nmap,for network recon
+A,gobuster,a directory/file & DNS busting tool
+G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images,gem install zsteg

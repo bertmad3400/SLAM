@@ -62,7 +62,7 @@ getCredentials(){
 
 # SLAMGraphical is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
 chooseSoftwareBundles(){
-	bundles="$(dialog --title "Bundle install" --no-cancel --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(ls | grep -i "csv" | sed -e 's/\.csv//g' | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 )"
+	bundles="$(dialog --title "Bundle install" --no-cancel --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(find ./CSVFiles -name "*.csv" | sed -e "s/\.csv//g;s/^.*\///g" | sort | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 )"
 }
 
 # Determine needed size of swap file based on RAM size + 2 GB
