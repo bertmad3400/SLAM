@@ -176,11 +176,11 @@ installPackages(){
 installSoftware(){
 	installYAY
 	deployDotFiles
-	cd /
+
 	# The path in which git will clone repos
 	gitPath="/home/$username/.local/src"
 	mkdir -p "$gitPath"
-	for bundle in $bundles; do installPackages "${bundle}.csv"; done
+	for bundle in $bundles; do installPackages "${SLAMDir}/CSVFiles/${bundle}.*"; done
 }
 
 configureFirefox(){

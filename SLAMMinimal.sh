@@ -89,15 +89,17 @@ finishDrive () {
 
 # Functions for copying over files to new installation so that they can be run inside chroot
 copyFiles (){
-	# Create directory in the temp directory
-	SLAMDir="/mnt/tmp/SLAM/"
-	mkdir "$SLAMDir"
+	# The directory on the new install that will store all needed files for further installation in chroot
+	SLAMDir="/mnt/tmp/SLAM"
+
+	# Create directory in the temp directory and the subdirectory needed for storing the csv files
+	mkdir -p "${SLAMDir}/CSVFiles"
 
 	# Add trap for cleanup
 	trap "rm -rf $SLAMDir" INT TERM EXIT
 
 	# Copy over the script the will be run in chroot
-	cp ./SLAMGraphical.sh /mnt
+	cp ./SLAMGraphical.sh "$SLAMDir/"
 
 	# Copy over the needed bundles
 	for bundle in $bundles
@@ -109,5 +111,5 @@ copyFiles (){
 	cp ./firefoxProfile /mnt
 
 }
-
-finishDrive && copyFiles && arch-chroot /mnt ./SLAMGraphical.sh
+							# Redifine SLAMDir as the root point is changing from / to /mnt/
+finishDrive && copyFiles && SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//") && arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"
