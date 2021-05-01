@@ -69,6 +69,18 @@ piecesConfig() {
 	# Make pacman and yay colorful and adds eye candy on the progress bar because why not.
 	grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf
 	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+
+	# Create a few folders needed for a couple of things
+	createFolders
+}
+
+# Some things like ZSH history won't work if the needed folders aren't available to store the needed files. Therefore this function creates those folders.
+createFolders () {
+	# Folder needed for ZSH command history
+	mkdir -p "/home/$username/.cache/zsh"
+
+	# Folders needed to store screenshots
+	mkdir -p "/home/$username/Screenshots/Full" "/home/$username/Screenshots/Selection" "/home/$username/Screenshots/Focused"
 }
 
 configureUsers(){
