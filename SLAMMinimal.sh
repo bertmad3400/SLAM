@@ -108,6 +108,12 @@ copyFiles (){
 		filepath="$(find . -name "${bundle}.csv")"
 		# Copy over the file itself
 		cp "$filepath" "${SLAMDir}/CSVFiles/"
+
+		# Locate all potential depency files and copy those over too
+		for depFile in $(grep "^D" "$filepath" | cut -d ',' -f2 | sed "s/^/.\/CSVFiles\//g")
+		do
+			cp "$depFile" "${SLAMDir}/CSVFiles/"
+		done
 	done
 
 	# Copy over custom profile for firefox

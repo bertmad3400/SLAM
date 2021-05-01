@@ -168,6 +168,7 @@ installPackages(){
 			A ) doas -u "$username" -- yay -S --noconfirm "$package";;
 			G ) gitIn "$package" ;;
 			L ) [ "$deviceType" = "Laptop" ] && doas -u "$username" -- yay -S --noconfirm $package;;
+			D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "$(echo "$package" | sed "s/^.*\///g")" ;;
 			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 		esac
 	done < "$1"
