@@ -117,7 +117,7 @@ copyFiles (){
 	done
 
 	# Copy over custom profile for firefox
-	cp -r ./firefoxProfile /mnt
+	cp -r ./firefoxProfile "$SLAMDir"
 
 }
 							# Redifine SLAMDir as the root point is changing from / to /mnt/
