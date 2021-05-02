@@ -19,5 +19,5 @@ A,zsh-fast-syntax-highlighting,syntax highlighting in ZSH
 A,zsh-you-should-use,suggesting aliases in ZSH
 G,https://github.com/bertmad3400/dwm.git,my build of DWM
 G,https://github.com/bertmad3400/st.git,my build of ST
-G,https://git.suckless.org/dmenu,suckless build of DMENU
+G,https://github.com/bertmad3400/dmenu.git,my build of DMENU
 G,https://github.com/joshumax/taralli.git,small program for wrapping the screen
