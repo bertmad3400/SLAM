@@ -90,7 +90,7 @@ finishDrive () {
 # Functions for copying over files to new installation so that they can be run inside chroot
 copyFiles (){
 	# The directory on the new install that will store all needed files for further installation in chroot
-	SLAMDir="/mnt/tmp/SLAM"
+	SLAMDir="/mnt/SLAM"
 
 	# Create directory in the temp directory and the subdirectory needed for storing the csv files
 	mkdir -p "${SLAMDir}/CSVFiles"
