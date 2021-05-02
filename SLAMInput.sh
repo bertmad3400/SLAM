@@ -65,6 +65,18 @@ chooseSoftwareBundles(){
 	bundles="$(dialog --title "Bundle install" --no-cancel --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(find ./CSVFiles -name "*.csv" | sed -e "s/\.csv//g;s/^.*\///g" | sort | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 )"
 }
 
+# SlamGraphical automatically adjusts some sudo privs, and it does also give the user the opportunity to select some commands, that should be able to be run as root without giving a password. This function chooses which it should be.
+cooseRootCommands(){
+	rootCommands="$(dialog --title "Commands as root" --no-cancel --no-items --checklist "Which commands should the user be able to run as root?" 0 0 0 \
+		"/usr/bin/shutdown" "0" \
+		"/usr/bin/reboot" "1" \
+		"/usr/bin/systemctl suspend" "2" \
+		"/usr/bin/mount" "3" \
+		"/usr/bin/umount" "4" \
+		"/usr/bin/pacman -Syu" "5" \
+		3>&1 1>&2 2>&3 3>&1 )"
+}
+
 # Determine needed size of swap file based on RAM size + 2 GB
 getSwapSize(){
 	# Converting the output from KB to B and adding 2 GB

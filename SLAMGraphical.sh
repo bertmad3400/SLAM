@@ -27,7 +27,7 @@ createSwapFile(){
 
 # Function for configuring all these small things that don't really fit elsewhere
 piecesConfig() {
-	
+
 	dialog --title "Configuring communcation" --infobox "Installing and enabling dhcpcd, NetworkManager and bluez" 0 0
 
 	# Configuring network
@@ -104,6 +104,11 @@ configureSudo(){
 	echo '	root ALL=(ALL) ALL #SLAM
 			%wheel ALL=(ALL) ALL #SLAM
 			Defaults insults #SLAM' | sed -e 's/^\s*//' 1> /etc/sudoers
+
+	eval "	for command in $rootCommands
+			do
+				echo \"%wheel ALL=(ALL) NOPASSWD:\$command\"
+			done" 1>> /etc/sudeors
 }
 
 # Collection function used for configuring new install
