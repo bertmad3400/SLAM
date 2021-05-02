@@ -148,7 +148,7 @@ gitIn(){
 
 installPackages(){
 	# $1 is the csv file containing packages to install
-	[ -f "$1" ] || error "$1 was not found. This seems to be an error with the script, please report it to the developers"
+	[ -f $1 ] || error "$1 was not found. This seems to be an error with the script, please report it to the developers"
 
 	# Create directory for installing git
 	mkdir -p "/home/$username/.local/src/"
@@ -168,7 +168,7 @@ installPackages(){
 			A ) doas -u "$username" -- yay -S --noconfirm "$package";;
 			G ) gitIn "$package" ;;
 			L ) [ "$deviceType" = "Laptop" ] && doas -u "$username" -- yay -S --noconfirm $package;;
-			D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "$(echo "$package" | sed "s/^.*\///g")" ;;
+			D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "${SLAMDir}/CSVFiles/$(echo "$package" | sed "s/^.*\///g")" ;;
 			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 		esac
 	done < "$1"
@@ -181,7 +181,7 @@ installSoftware(){
 	# The path in which git will clone repos
 	gitPath="/home/$username/.local/src"
 	mkdir -p "$gitPath"
-	for bundle in $bundles; do installPackages "${SLAMDir}/CSVFiles/${bundle}.*"; done
+	for bundle in $bundles; do installPackages ${SLAMDir}/CSVFiles/${bundle}.*; done
 }
 
 configureFirefox(){
