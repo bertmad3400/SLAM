@@ -71,7 +71,7 @@ piecesConfig() {
 	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 
 	# Create a few folders needed for a couple of things and run it as the user instead of as root
-	doas -u "$username" -- createFolders
+	sudo -u "$username" createFolders
 }
 
 # Some things like ZSH history won't work if the needed folders aren't available to store the needed files. Therefore this function creates those folders.
@@ -95,9 +95,8 @@ configureUsers(){
 
 # Give the user permission to run any command as root without password and the root user permissions to run any command as the user, which is needed to run YAY. Will change to normal perms at script exit
 configurePerms(){
-	echo "permit nopass root as $username" 1> /etc/doas.conf
 	echo "%wheel ALL=(ALL) NOPASSWD: ALL #SLAM" 1>> /etc/sudoers
-	trap 'echo "permit persist :wheel" > /etc/doas.conf; sed -i "/#SLAM/d" /etc/sudoers; echo "%wheel ALL=(ALL) ALL #LARBS" >> /etc/sudoers' INT TERM EXIT
+	trap 'sed -i "/#SLAM/d" /etc/sudoers; echo "%wheel ALL=(ALL) ALL #SLAM" >> /etc/sudoers' INT TERM EXIT
 }
 
 # Collection function used for configuring new install
@@ -115,17 +114,17 @@ installYAY(){
 	git clone https://aur.archlinux.org/yay-git.git
 	chown -R "$username" ./yay-git
 	cd yay-git || error "Newly created yay-git folder didn't exist. This is probably a problem with the script, please report it to the developer"
-	doas -u "$username" -- makepkg -si --noconfirm
+	sudo -u "$username" makepkg -si --noconfirm
 }
 
 deployDotFiles(){
-	doas -u "$username" -- git clone --bare https://github.com/bertmad3400/dootfiles.git "/home/$username/.dootfiles.git"
+	sudo -u "$username" git clone --bare https://github.com/bertmad3400/dootfiles.git "/home/$username/.dootfiles.git"
 
 	# Overwrite any existing file
-	doas -u "$username" -- /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" reset --hard
+	sudo -u "$username" /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" reset --hard
 
 	# Deploy the dotfiles
-	doas -u "$username" -- /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" checkout
+	sudo -u "$username" /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" checkout
 }
 
 gitIn(){
@@ -138,7 +137,7 @@ gitIn(){
 	# Making sure the user has write perms to the folder used for git source code
 	chown "$username" "$gitPath"
 
-	doas -u "$username" -- git clone "$1" "$programPath"
+	sudo -u "$username" git clone "$1" "$programPath"
 
 	cd "$programPath"
 
@@ -165,9 +164,9 @@ installPackages(){
 
 		case $tag in
 			M ) pacIn $package;;
-			A ) doas -u "$username" -- yay -S --noconfirm "$package";;
+			A ) sudo -u "$username" yay -S --noconfirm "$package";;
 			G ) gitIn "$package" ;;
-			L ) [ "$deviceType" = "Laptop" ] && doas -u "$username" -- yay -S --noconfirm $package;;
+			L ) [ "$deviceType" = "Laptop" ] && sudo -u "$username" yay -S --noconfirm $package;;
 			D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "${SLAMDir}/CSVFiles/$(echo "$package" | sed "s/^.*\///g")" ;;
 			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 		esac
