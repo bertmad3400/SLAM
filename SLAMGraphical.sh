@@ -70,8 +70,8 @@ piecesConfig() {
 	grep -q "^Color" /etc/pacman.conf || sed -i "s/^#Color$/Color/" /etc/pacman.conf
 	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 
-	# Create a few folders needed for a couple of things
-	createFolders
+	# Create a few folders needed for a couple of things and run it as the user instead of as root
+	doas -u "$username" -- createFolders
 }
 
 # Some things like ZSH history won't work if the needed folders aren't available to store the needed files. Therefore this function creates those folders.
@@ -102,10 +102,10 @@ configurePerms(){
 
 # Collection function used for configuring new install
 configureInstall(){
-	createSwapFile
-	piecesConfig
 	configureUsers
 	configurePerms
+	createSwapFile
+	piecesConfig
 }
 
 installYAY(){
