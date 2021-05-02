@@ -96,7 +96,14 @@ configureUsers(){
 # Give the user permission to run any command as root without password and the root user permissions to run any command as the user, which is needed to run YAY. Will change to normal perms at script exit
 configurePerms(){
 	echo "%wheel ALL=(ALL) NOPASSWD: ALL #SLAM" 1>> /etc/sudoers
-	trap 'sed -i "/#SLAM/d" /etc/sudoers; echo "%wheel ALL=(ALL) ALL #SLAM" >> /etc/sudoers' INT TERM EXIT
+	trap 'configureSudo' INT TERM EXIT
+}
+
+# Function used for setting a few settings in the sudoers file. Should be run in the very last part of the script (preferably using a trap) as it prevent the user from running any command as root without password
+configureSudo(){
+	echo '	root ALL=(ALL) ALL #SLAM
+			%wheel ALL=(ALL) ALL #SLAM
+			Defaults insults #SLAM' | sed -e 's/^\s*//' 1> /etc/sudoers
 }
 
 # Collection function used for configuring new install
