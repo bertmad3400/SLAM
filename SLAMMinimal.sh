@@ -121,4 +121,4 @@ copyFiles (){
 
 }
 							# Redifine SLAMDir as the root point is changing from / to /mnt/
-finishDrive && copyFiles && SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//") && arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"
+finishDrive && copyFiles && export SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//") && arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"
