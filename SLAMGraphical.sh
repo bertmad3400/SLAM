@@ -194,7 +194,7 @@ configureFirefox(){
 	firefox -CreateProfile privacy
 
 	# Move the needed files into the folder
-	cp "/firefoxProfile/*" "/home/$username/.mozilla/firefox/*.privacy"
+	cp -r "/firefoxProfile/*" "/home/$username/.mozilla/firefox/*.privacy"
 
 	# Make the new profile the default by replacing the name of the default entry in profiles with the one ending in .privacy and create a backup with the i option
 	sed -i.bak "s/Default=.*\..*/$(grep '[a-zA-Z0-9]*\.privacy$' profiles.ini)/" profiles.ini
