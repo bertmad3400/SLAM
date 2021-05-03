@@ -7,3 +7,4 @@ M,usbutils,for checking in on usb devices
 M,python,an interpreter for python
 M,xterm,backup terminal
 M,highlight,for syntax highlighting of STDIN.
+M,diff-so-fancy,an easier way of reading git diffs
