@@ -198,17 +198,25 @@ installSoftware(){
 configureFirefox(){
 	dialog --title "Firefox profile" --infobox "Creating new default firefox profile optimized for a private browsing experience" 5 30
 
+	firefoxDir="/home/$username/.mozilla/firefox/"
+
+	# Making sure the firefox folder exists
+	sudo -u "$username" mkdir -p "$firefoxDir"
+
 	# Make sure the script is in the right folder
-	cd "/home/$username/.mozilla/firefox/"
+	cd "$firefoxDir"
+
+	# Run firefox once to make sure default profiles are created. Use timeout to kill it after 30 seconds since we only give it time to create the profiles
+	timeout 30s sudo -u "$username" firefox -headless
 
 	# Create the new firefox profile
-	sudo -u "$username" firefox -CreateProfile privacy
+	sudo -u "$username" firefox -headless -CreateProfile privacy
 
 	# Move the needed files into the folder
-	sudo -u "$username" cp -r "/firefoxProfile/*" "/home/$username/.mozilla/firefox/*.privacy"
+	sudo -u "$username" cp -r /SLAM/firefoxProfile/* ${firefoxDir}*.privacy
 
 	# Make the new profile the default by replacing the name of the default entry in profiles with the one ending in .privacy and create a backup with the i option
-	sudo -u "$username" sed -i.bak "s/Default=.*\..*/$(grep '[a-zA-Z0-9]*\.privacy$' profiles.ini)/" profiles.ini
+	# sudo -u "$username" sed -i.bak "s/Default=.*\..*/$(grep '[a-zA-Z0-9]*\.privacy$' profiles.ini)/" profiles.ini
 
 
 }
