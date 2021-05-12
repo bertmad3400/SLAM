@@ -74,7 +74,7 @@ chooseRootCommands(){
 		"/usr/bin/mount" "3" \
 		"/usr/bin/umount" "4" \
 		"/usr/bin/pacman -Syu" "5" \
-		3>&1 1>&2 2>&3 3>&1 )" 0 0
+		3>&1 1>&2 2>&3 3>&1 )"
 }
 
 # Determine needed size of swap file based on RAM size + 2 GB
