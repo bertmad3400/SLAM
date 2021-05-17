@@ -1,10 +1,11 @@
 M,ntfs-3g,for mounting NTFS partitions
 M,gnupg,for using GPG
 M,arch-install-scripts,for creating new arch install
-M,gcc,for compilling code
+M,gcc,for compiling code
 M,htop,for monitoring system
 M,usbutils,for checking in on usb devices
 M,python,an interpreter for python
 M,xterm,backup terminal
 M,highlight,for syntax highlighting of STDIN.
 M,diff-so-fancy,an easier way of reading git diffs
+M,p7zip,for zipping and unzipping

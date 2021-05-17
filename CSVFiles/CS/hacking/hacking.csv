@@ -5,5 +5,5 @@ M,sqlmap,for exploiting SQL injection
 M,wireshark-qt,for analysing traffic
 M,nmap,for network recon
 A,gobuster,a directory/file & DNS busting tool
-G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images,gem install zsteg
-D,CS/hacking/routersploit.dep,the dependencies needed for routersploit
+G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images
+D,CS/hacking/routersploit.dep,routersploit and the dependencies needed for it

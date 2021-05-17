@@ -1,2 +1,4 @@
 M,geogebra,for cas and graphs
 M,libreoffice,a office alternative
+M,texlive-most,for latex
+M,biber,for compiling bibtex citation lists for latex
