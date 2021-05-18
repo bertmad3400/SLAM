@@ -20,4 +20,4 @@ A,zsh-you-should-use,suggesting aliases in ZSH
 G,https://github.com/bertmad3400/dwm.git,my build of DWM
 G,https://github.com/bertmad3400/st.git,my build of ST
 G,https://github.com/bertmad3400/dmenu.git,my build of DMENU
-G,https://github.com/joshumax/taralli.git,small program for wrapping the screen
+C,https://github.com/joshumax/taralli.git;installScripts/taralli.sh,small program for wrapping the screen
