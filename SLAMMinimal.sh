@@ -91,7 +91,7 @@ copyFiles (){
 	SLAMDir="/mnt/SLAM"
 
 	# Create directory in the temp directory and the subdirectory needed for storing the csv files
-	mkdir -p "${SLAMDir}/CSVFiles"
+	mkdir -p "${SLAMDir}/installFiles"
 
 	# Add trap for cleanup
 	trap "rm -rf $SLAMDir" INT TERM EXIT
@@ -105,13 +105,14 @@ copyFiles (){
 		# Get the full path to the file stored in CSVFiles folder
 		filepath="$(find . -name "${bundle}.csv")"
 		# Copy over the file itself
-		cp "$filepath" "${SLAMDir}/CSVFiles/"
+		cp "$filepath" "${SLAMDir}/installFiles/"
 
-		# Locate all potential depency files and copy those over too
-		for depFile in $(grep "^D" "$filepath" | cut -d ',' -f2 | sed "s/^/.\/CSVFiles\//g")
+		# Locate all potential depency files and custom install scripts and copy those over too
+		for extraFile in $(grep -E "^D|^C" "$filepath" | cut -d ',' -f2)
 		do
-			cp "$depFile" "${SLAMDir}/CSVFiles/"
+			cp "$extraFile" "${SLAMDir}/installFiles/"
 		done
+
 	done
 
 	# Copy over custom profile for firefox

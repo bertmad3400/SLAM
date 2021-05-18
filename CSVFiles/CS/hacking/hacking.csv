@@ -6,4 +6,4 @@ M,wireshark-qt,for analysing traffic
 M,nmap,for network recon
 A,gobuster,a directory/file & DNS busting tool
 G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images
-D,CS/hacking/routersploit.dep,routersploit and the dependencies needed for it
+D,CSVFiles/CS/hacking/routersploit.dep,routersploit and the dependencies needed for it
