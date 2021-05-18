@@ -1,4 +1,4 @@
-L,backlight_control,for controlling the screen brightness.
+LA,backlight_control,for controlling the screen brightness.
 M,neovim,for editing text based files.
 M,firefox,browsing the web.
 M,sxiv,for viewing images.
