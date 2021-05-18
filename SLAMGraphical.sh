@@ -139,7 +139,7 @@ deployDotFiles(){
 	sudo -u "$username" /usr/bin/git --git-dir="/home/$username/.dootfiles.git" --work-tree="/home/$username/" checkout
 }
 
-gitIn(){
+gitClone(){
 
 	echo "$1" | grep -q "https:.*\/" || error "The git package $1 doesn't seem to be a url"
 	packageName="$(echo "$1" | sed "s/^.*\///g;s/\..*//g" )"
@@ -152,9 +152,21 @@ gitIn(){
 	sudo -u "$username" git clone "$1" "$programPath"
 
 	cd "$programPath"
+}
+
+gitIn(){
+
+	gitClone $1
 
 	make
 	make install
+}
+
+customInstall(){
+
+	gitClone $1
+	/bin/sh $2
+
 }
 
 installPackages(){
@@ -186,6 +198,7 @@ chooseInstallMethod(){
 		G ) gitIn "$package" ;;
 		L* ) [ "$deviceType" = "Laptop" ] && chooseInstallMethod ${1:1};; # Calling the function for installing the software again, if the target is a laptop, but removes the first characther (the L) since it's verified that it's a laptop
 		D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "${SLAMDir}/CSVFiles/$(echo "$package" | sed "s/^.*\///g")" ;;
+		C ) source="${package%%;*}"; scriptName="${package##*/}"; dialog --title "Custom install script" --infobox "Installing $scriptName using by custom install"; customInstall "$source" "${SLAMDir}/CSVFiles/$scriptName" ;;
 		* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
 	esac
 }
