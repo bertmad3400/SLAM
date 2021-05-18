@@ -1,4 +1,3 @@
-Rewrite how partitions is refered to, to use lsblk instead of the drive name plus a number since this won't work on fx. NVME drives
 Use sfdisk instead of fdisk to prevent the interactive prompt from complicating things
 Implement option in csvfiles for custom install scripts
 Change the language installed

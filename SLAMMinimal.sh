@@ -5,6 +5,8 @@ error() {
 	exit 1
 }
 
+set -a
+
 dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60
 dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null
 
@@ -48,16 +50,30 @@ partitionDrive(){
 	EOF
 }
 
+getPartitionPaths(){
+	partitionPaths="$(lsblk $drive -o NAME,TYPE,SIZE -pnl | grep part)"
+
+	if [ "$bootMode" = "UEFI" ]
+	then
+		part1="$(echo "$partitionPaths" | grep "M" | cut -d ' ' -f1)"
+		part2="$(echo "$partitionPaths" | grep "G" | cut -d ' ' -f1)"
+	elif [ "$bootMode" = "BIOS" ]
+	then
+		part1="$(echo "$partitionPaths" | cut -d ' ' -f1)"
+	fi
+	echo $part1
+}
+
 createFS(){
 	dialog --title "Creating FS" --infobox "Creating the filesystem for $drive ..." 5 60
 	if [ "$bootMode" = "UEFI" ]
 	then
-		yes | mkfs.fat -F32 "${drive}1"
-		yes | mkfs.ext4 "${drive}2"
+		yes | mkfs.fat -F32 "$part1"
+		yes | mkfs.ext4 "$part2"
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		yes | mkfs.ext4 "${drive}1"
+		yes | mkfs.ext4 "$part1"
 
 	fi
 }
@@ -67,17 +83,18 @@ mountDrive(){
 
 	if [ "$bootMode" = "UEFI" ]
 	then
-		mount "${drive}2" /mnt
+		mount "$part2" /mnt
 
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		mount "${drive}1" /mnt
+		mount "$part1" /mnt
 	fi
 }
 
 # Function for collecting all the functions for install arch on the selected drive
 finishDrive () {
 	partitionDrive
+	getPartitionPaths
 	createFS
 	mountDrive
 
@@ -121,4 +138,4 @@ copyFiles (){
 
 }
 							# Redifine SLAMDir as the root point is changing from / to /mnt/
-finishDrive && copyFiles && export SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//") && arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"
+finishDrive && copyFiles && SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//") && arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"

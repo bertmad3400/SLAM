@@ -227,7 +227,7 @@ configureBootloader(){
 		dialog --title "Bootloader" --infobox "Creating UEFI bootloader using GRUB..." 0 0
 		pacIn efibootmgr grub
 		mkdir /boot/efi
-		mount "${drive}1" /boot/efi
+		mount "$part1" /boot/efi
 		grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi
 		grub-mkconfig -o /boot/grub/grub.cfg
 
