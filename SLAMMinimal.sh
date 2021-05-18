@@ -7,9 +7,6 @@ error() {
 
 set -a
 
-dialog --title "Deploying Nuke" --infobox "Currently in the procces of cleaning $drive ..." 5 60
-dd if=/dev/zero of="$drive" bs=1M count=1000 1> /dev/null
-
 # For properly formating the newly cleared drive
 # Will create on boot partition (based on the result from checkBootMode) and then one big root partition. Swap is in a swapfile
 partitionDrive(){
