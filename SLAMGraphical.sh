@@ -174,15 +174,20 @@ installPackages(){
 
 		dialog --title "Installing..." --infobox "Installing $package from $TAG ($currentPackageCount out of $totalPackageCount from $1). $package is $purpose" 0 0
 
-		case $tag in
-			M ) pacIn $package;;
-			A ) sudo -u "$username" yay -S --noconfirm "$package";;
-			G ) gitIn "$package" ;;
-			L ) [ "$deviceType" = "Laptop" ] && sudo -u "$username" yay -S --noconfirm $package;;
-			D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "${SLAMDir}/CSVFiles/$(echo "$package" | sed "s/^.*\///g")" ;;
-			* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
-		esac
+		chooseInstallMethod "$tag"
+
 	done < "$1"
+}
+
+chooseInstallMethod(){
+	case $1 in
+		M ) pacIn $package;;
+		A ) sudo -u "$username" yay -S --noconfirm "$package";;
+		G ) gitIn "$package" ;;
+		L ) [ "$deviceType" = "Laptop" ] && sudo -u "$username" yay -S --noconfirm $package;;
+		D ) dialog --title "Dependencies" --infobox "Installing $package which is ${purpose}."; installPackages "${SLAMDir}/CSVFiles/$(echo "$package" | sed "s/^.*\///g")" ;;
+		* ) dialog --title "What??" --infobox "It seems that $package didn't have a tag, or it weren't recognized. Did you use the official files? If so please contact the developers. Skipping it for now" 0 0; echo "Error with following: \n package: $package \n tag: $tag \n purpose: $purpose \n" 1>> missingPackages; sleep 10 ;;
+	esac
 }
 
 installSoftware(){
