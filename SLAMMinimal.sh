@@ -18,34 +18,18 @@ partitionDrive(){
 
 	if [ "$bootMode" = "UEFI" ]
 	then
-		partitionScheme="	g 	# For making sure the drive has a GPT disklabel instead of DOS/MBR
-					n 	# Create the boot partition
-						# Chosing the default partition number
-						# Default first sector, let it start at the start of the disk
-					+512M	# Make the boot partition 512 MB in size
-					t	# Change the type of the partition
-					1	# Set it to type 1, or EFI System
-					n	# Create the root partition
-						# Chosing the default partition number
-						# Default first sector, let it start at the of free space on disk
-						# Default last sector, letting it take the rest of the space
-					p	# Printing the partition table just before writing, for use in logfile
-					w	# Write changes to disk "
+		partitionScheme="	label: gpt
+							,512M,U;
+							;"
 
 	# For setting the disklabel to DOS for BIOS booting
 	elif [ "$bootMode" = "BIOS" ]
 	then
-		partitionScheme="	o	# For creating DOS disklabel
-					n	# Create the partition
-						# Chosing the default partition type
-						# Chosing the default partition number
-						# Default first sector, let it start at the start of free space on disk
-						# Default last sector, letting it take the rest of the space
-					p	# Printing the partition table just before writing, for use in logfile
-					w	# Write the changes to the drive "
+					partitionScheme="	label: dos
+										;"
 	fi
 
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<-EOF | fdisk "$drive"
+	sed "s/\s*\#.*$//" <<-EOF | sfdisk "$drive"
 	$partitionScheme
 	EOF
 }
