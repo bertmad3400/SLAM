@@ -45,14 +45,16 @@ piecesConfig() {
 	# Set the systemclock to be accurate. Using sed for removing leading whitespace needed for proper indention
 	timedatectl set-ntp true
 
-	echo "da_DK.UTF-8 UTF-8
-		da_DK ISO-8859-1" | sed -e 's/^\s*//' 1>> /etc/local.gen
+	# Set the system locale
+	echo "	LANG=en_US.UTF-8
+			LC_TIME=en_DK.UTF-8
+			LC_MESSAGES=en_US.UTF-8
+			LC_COLLATE=C" | sed 's/^\s*//' 1> /etc/local.conf
+
+	echo "en_US.UTF-8 UTF-8" 1> /etc/local.gen
 
 	# Generate needed locales
 	locale-gen
-
-	# Set the system locale
-	echo "LANG=da_DK.UTF-8" 1> /etc/local.conf
 
 	# Set the keyboard layout permanently
 	echo "KEYMAP=dk" 1> /etc/vconsole.conf
@@ -62,8 +64,8 @@ piecesConfig() {
 
 	# Set entries for hosts file for localhost ip's
 	echo "	127.0.0.1	localhost
-		::1		localhost
-		127.0.1.1	$hostname.local	$hostname" | sed -e 's/^\s*//' 1>> /etc/hosts
+			::1		localhost
+			127.0.1.1	$hostname.local	$hostname" | sed -e 's/^\s*//' 1>> /etc/hosts
 
 
 	# Make pacman and yay colorful and adds eye candy on the progress bar because why not.
