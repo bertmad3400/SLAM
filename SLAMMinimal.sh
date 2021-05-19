@@ -113,7 +113,7 @@ copyFiles (){
 		# Locate all potential depency files and custom install scripts and copy those over too
 		for extraFile in $(grep -E "^D|^C" "$filepath" | cut -d ',' -f2)
 		do
-			cp "$extraFile" "${SLAMDir}/installFiles/"
+			cp "${extraFile##*;}" "${SLAMDir}/installFiles/"
 		done
 
 	done
