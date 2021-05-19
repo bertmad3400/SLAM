@@ -11,7 +11,10 @@ set -a
 # Will create on boot partition (based on the result from checkBootMode) and then one big root partition. Swap is in a swapfile
 partitionDrive(){
 	# For creating the boot partition and setting the disklabel to GPT for UEFI boot
-	dialog --title "Partitioning drive..." --infobox "Currently in the procces of partitioning $drive" 5 60
+	dialog --title "Partitioning drive..." --infobox "Currently in the procces of wiping and partitioning $drive" 5 60
+
+	# Removing signatures to avoid possible collisions
+	wipefs -a "$drive"
 
 	if [ "$bootMode" = "UEFI" ]
 	then
