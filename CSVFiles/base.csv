@@ -15,6 +15,8 @@ M,slock,for locking the screen
 M,xwallpaper,for setting the background
 M,openssh,for using ssh
 M,x11-ssh-askpass,for allowing use of ssh keys from agent
+M,xclip,allowing to copy and paste from CLI
+M,scrot,for capturing screenshots
 A,zsh-fast-syntax-highlighting,syntax highlighting in ZSH
 A,zsh-you-should-use,suggesting aliases in ZSH
 G,https://github.com/bertmad3400/dwm.git,my build of DWM

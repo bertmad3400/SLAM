@@ -1,6 +1,5 @@
 M,keepassxc,a password manager
 M,noto-fonts-emoji,a font for emoji
-M,xclip,allowing to copy and paste from CLI
-M,scrot,for capturing screenshots
 M,stalonetray,stand-alone system tray used with nm-applet
 M,network-manager-applet,GUI util for WIFI conf
+M,discord,a communication platform

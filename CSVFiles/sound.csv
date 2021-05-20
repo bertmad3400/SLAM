@@ -3,4 +3,4 @@ M,pulseaudio-alsa,needed to make pulseaudio work with bluetooth
 M,pulseaudio-bluetooth,for making pulseaudio work with bluetooth
 M,bluez-utils,cli for bluetooth
 M,pulsemixer,for controlling sound on your system.
-M,pavucontrol, graphical interface for pulseaudio
+M,pavucontrol,graphical interface for pulseaudio
