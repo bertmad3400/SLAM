@@ -9,6 +9,8 @@ M,xorg-xwininfo,for querying information about windows.
 M,xorg-server,as a graphical server
 M,xorg-xinit,for starting the graphical server
 M,xorg-xsetroot,used for displaying text in DWM bar (date)
+M,xorg-xmodmap,for switching some keyboard keys
+M,xorg-setxkbmap,for setting the keyboard layout
 M,picom,as a X compositor
 M,zsh,the shell used by default
 M,slock,for locking the screen

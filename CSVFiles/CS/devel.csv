@@ -10,3 +10,4 @@ M,highlight,for syntax highlighting of STDIN.
 M,diff-so-fancy,an easier way of reading git diffs
 M,p7zip,for zipping and unzipping
 M,tree,for listing files
+M,perl-image-exiftool,tool for viewing image metadata

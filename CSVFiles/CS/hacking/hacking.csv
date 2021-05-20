@@ -4,6 +4,7 @@ M,aircrack-ng,for manual wifi penetration
 M,sqlmap,for exploiting SQL injection
 M,wireshark-qt,for analysing traffic
 M,nmap,for network recon
+M,perl-image-exiftool,tool for viewing image metadata
 A,gobuster,a directory/file & DNS busting tool
 G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images
 D,CSVFiles/CS/hacking/routersploit.dep,routersploit and the dependencies needed for it
