@@ -1,7 +1,7 @@
 #!/bin/sh
 
 error() {
-	echo "Error: $@"
+	echo "Script error: $@"
 	exit 1
 }
 
@@ -35,6 +35,7 @@ partitionDrive(){
 }
 
 getPartitionPaths(){
+	# Get the full path to all the partitions on the drive
 	partitionPaths="$(lsblk $drive -o NAME,TYPE,SIZE -pnl | grep part)"
 
 	if [ "$bootMode" = "UEFI" ]
@@ -50,6 +51,8 @@ getPartitionPaths(){
 
 createFS(){
 	dialog --title "Creating FS" --infobox "Creating the filesystem for $drive ..." 5 60
+
+	# Pipping in yes to make sure old filesystems are deleted and the interactive prompt doesn't halt the whole script
 	if [ "$bootMode" = "UEFI" ]
 	then
 		yes | mkfs.fat -F32 "$part1"
@@ -122,5 +125,16 @@ copyFiles (){
 	cp -r ./firefoxProfile "$SLAMDir"
 
 }
-							# Redifine SLAMDir as the root point is changing from / to /mnt/
-finishDrive && copyFiles && SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//") && arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"
+
+main(){
+	finishDrive
+	copyFiles
+
+	# Redifine SLAMDir as the root point is changing from / to /mnt/
+	SLAMDir=$(echo "$SLAMDir" | sed "s/\/mnt//")
+
+	# Run the last part of the setup script in a chroot
+	arch-chroot /mnt "${SLAMDir}/SLAMGraphical.sh"
+}
+
+main

@@ -105,7 +105,8 @@ configurePerms(){
 configureSudo(){
 	echo '	root ALL=(ALL) ALL #SLAM
 			%wheel ALL=(ALL) ALL #SLAM
-			Defaults insults #SLAM' | sed -e 's/^\s*//' 1> /etc/sudoers
+			Defaults insults #SLAM
+			Defaults passprompt="^G[sudo] password for %p: "' | sed -e 's/^\s*//' 1> /etc/sudoers
 
 	eval "	for command in $rootCommands
 			do
@@ -217,7 +218,7 @@ installSoftware(){
 }
 
 configureFirefox(){
-	dialog --title "Firefox profile" --infobox "Creating new default firefox profile optimized for a private browsing experience" 5 30
+	dialog --title "Firefox profile" --infobox "Creating new default firefox profile optimized for a private browsing experience. Remember to enable it at about:profile in firefox. This might take a minute or two." 5 30
 
 	firefoxDir="/home/$username/.mozilla/firefox/"
 
@@ -236,7 +237,7 @@ configureFirefox(){
 	# Move the needed files into the folder
 	sudo -u "$username" cp -r /SLAM/firefoxProfile/* ${firefoxDir}*.privacy
 
-	# Make the new profile the default by replacing the name of the default entry in profiles with the one ending in .privacy and create a backup with the i option
+	# Make the new profile the default by replacing the name of the default entry in profiles with the one ending in .privacy and create a backup with the i option. Currently not used as firefox resets this upon first boot for some reason
 	# sudo -u "$username" sed -i.bak "s/Default=.*\..*/$(grep '[a-zA-Z0-9]*\.privacy$' profiles.ini)/" profiles.ini
 
 
@@ -261,10 +262,13 @@ configureBootloader(){
 	fi
 }
 
-dialog --title "Refreshing keyrings..." --infobox "Refreshing the keyrings on the new system. This is probably no needed, but is done to make sure that everything is going to go smoothly" 0 0
-pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't be refreshed. You unfortunatly probably need to run the script again"
+main(){
+	dialog --title "Refreshing keyrings..." --infobox "Refreshing the keyrings on the new system. This is probably no needed, but is done to make sure that everything is going to go smoothly" 0 0
+	pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't be refreshed. You unfortunatly probably need to run the script again"
 
-configureInstall
-installSoftware
-pacman -Qs firefox > /dev/null && configureFirefox
-configureBootloader
+	configureInstall
+	installSoftware
+	pacman -Qs firefox > /dev/null && configureFirefox
+	configureBootloader
+}
+main

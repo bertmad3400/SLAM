@@ -85,14 +85,14 @@ getSwapSize(){
 
 # For verifying the size of the drive, and wiping in and thereby preparing it for formating
 verifyAndProcced() {
-	driveSize="$(lsblk -b --output SIZE -n -d "$drive")"
+	driveSize="$(lsblk -bdn --output SIZE "$drive")"
 
 	# Making sure the drive is the right size
 	# Completly aborting if there isn't enough space
 	if [ "$driveSize" -le 1073741824 ];
 	then
 		dialog --title "Too small" --msgbox "The selected drive, $drive, seem to be less than 1 GiB in size. This is simply to little space for the installation to continue, and as such, it will now end" 8 50; error "too little space on $drive"
-	
+
 	# Warning the user if there's less than 4 GiB available on the drive
 	elif [ "$driveSize" -le 4294967296 ];
 	then
