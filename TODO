@@ -1,0 +1,5 @@
+Fix swap file creation
+Add possibility to change swapfile size during installation
+Give user options for installing fonts on system
+Give language options for keyboard during setup
+Give option to disable root user, should root password be left empty.
