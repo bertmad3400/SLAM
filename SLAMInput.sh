@@ -26,37 +26,43 @@ locateInstallDrive() {
 	drive="$(dialog --title "Select a drive" --no-items --menu "Which drive do you want the installation to procced on?" 0 0 0 $( for drive in $(lsblk -dno NAME); do echo /dev/"$drive"; done) 3>&2 2>&1 1>&3 || error "User exited" )"
 }
 
+# Function for taking an input and checking that it matches a regex and max length
+verifyCredential(){
+
+	credential=$(dialog --no-cancel --inputbox "Enter $1 for $2" 12 65 3>&1 1>&2 2>&3 3>&1)
+
+	while [ "$(expr "$credential" : "$3")" = 0 ] || [ ${#credential} -gt $4 ]
+	do
+		credential="$(dialog --no-cancel --inputbox "The $1 contained illegal characthers or was too long. It shouldn't be longer than $4 and should fit the following regex: $3 " 14 70 3>&1 1>&2 2>&3 3>&1)"
+	done
+
+	echo $credential
+}
+
+# Function for making the user enter a password twice, and checking that they're the same to avoid misstyping it
+getPass(){
+	pass=$(dialog --no-cancel --passwordbox "Enter password for $1." 12 65 3>&1 1>&2 2>&3 3>&1)
+	pass2=$(dialog --no-cancel --passwordbox "Retype the password for $1." 12 65 3>&1 1>&2 2>&3 3>&1)
+
+	# Making sure the passwords match and aren't empty
+	while [ "$pass" != "$pass2" ] || [ "$pass" = "" ]
+	do
+		pass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match or you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
+		pass2="$(dialog --no-cancel --passwordbox "Retype the password for $1" 12 65 3>&1 1>&2 2>&3 3>&1)"
+	done
+
+	echo $pass
+	unset pass pass2
+}
+
 getCredentials(){
-	rootPass=$(dialog --no-cancel --passwordbox "Enter password for the root user." 12 65 3>&1 1>&2 2>&3 3>&1)
-	rootPass2=$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)
-	while [ "$rootPass" != "$rootPass2" ] || [ "$rootPass" = "" ]
-	do
-		rootPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match or you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
-		rootPass2="$(dialog --no-cancel --passwordbox "Retype the password for the root user" 12 65 3>&1 1>&2 2>&3 3>&1)"
-	done
 
-	username=$(dialog --no-cancel --inputbox "Enter username for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)
+	username="$(verifyCredential "username" "the new user" '^[a-z][-a-z0-9]*$' 32)"
 
-	while [ "$(expr "$username" : ^[a-z][-a-z0-9]*\$)" = 0 ]
-	do
-		username="$(dialog --no-cancel --inputbox "The username contained illegal characthers. It should start with lower case letters and only contain lower case letters and numbers, fitting the following regex: : ^[a-z][-a-z0-9]*\\$ " 14 70 3>&1 1>&2 2>&3 3>&1)"
-	done
+	userPass="$(getPass "the new user")"
+	rootPass="$(getPass "the root user")"
 
-	userPass="$(dialog --no-cancel --passwordbox "Enter password for the new user." 12 65 3>&1 1>&2 2>&3 3>&1)"
-	userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
-
-	while ! [ "$userPass" = "$userPass2" ] || [ "$userPass" = "" ]
-	do
-		userPass="$(dialog --no-cancel --passwordbox "The passwords apparently didn't match or you entered an empty password which is not allowed. Please try and re-enter them" 12 65 3>&1 1>&2 2>&3 3>&1)"
-		userPass2="$(dialog --no-cancel --passwordbox "Retype the password for the new user" 12 65 3>&1 1>&2 2>&3 3>&1)"
-	done
-
-	hostname=$(dialog --no-cancel --inputbox "Enter a hostname for the computer" 12 65 3>&1 1>&2 2>&3 3>&1)
-
-	while [ "$(expr "$hostname" : ^[a-z][-a-z0-9]*\$)" = 0 ]
-	do
-		hostname="$(dialog --no-cancel --inputbox "The hostname contained illegal characthers. It should start with lower case letters and only contain lower case letters and numbers, fitting the following regex: : ^[a-z][-a-z0-9]*\\$ " 14 70 3>&1 1>&2 2>&3 3>&1)"
-	done
+	hostname="$(verifyCredential "hostname" "the computer" '^[a-z][-a-z0-9]*$' 63)"
 
 }
 
