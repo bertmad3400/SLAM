@@ -87,7 +87,7 @@ createFolders () {
 
 configureUsers(){
 	# Set the root-password
-	echo "root:$rootPass" | chpasswd
+	[ "$rootPass" != "!" ] && echo "root:$rootPass" | chpasswd || { passwd -l root ; usermod --expiredate 1 root; }
 
 	# Create new user and add it to needed/wanted groups
 	useradd -m -s /bin/zsh -g users -G wheel,audio,input,optical,storage,video "$username"

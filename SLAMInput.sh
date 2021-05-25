@@ -60,7 +60,7 @@ getCredentials(){
 	username="$(verifyCredential "username" "the new user" '^[a-z][-a-z0-9]*$' 32)"
 
 	userPass="$(getPass "the new user")"
-	rootPass="$(getPass "the root user")"
+	dialog --title "Root account?" --yesno "Do you want to enable the root user?" 0 0 && rootPass="$(getPass "the root user")" || rootPass="!"
 
 	hostname="$(verifyCredential "hostname" "the computer" '^[a-z][-a-z0-9]*$' 63)"
 
