@@ -49,9 +49,9 @@ piecesConfig() {
 	echo "	LANG=en_US.UTF-8
 			LC_TIME=en_DK.UTF-8
 			LC_MESSAGES=en_US.UTF-8
-			LC_COLLATE=C" | sed 's/^\s*//' 1> /etc/local.conf
+			LC_COLLATE=C" | sed 's/^\s*//' 1> /etc/locale.conf
 
-	echo "en_US.UTF-8 UTF-8" 1> /etc/local.gen
+	echo "en_US.UTF-8 UTF-8" 1> /etc/locale.gen
 
 	# Generate needed locales
 	locale-gen
