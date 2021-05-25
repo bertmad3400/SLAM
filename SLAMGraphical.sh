@@ -74,6 +74,13 @@ piecesConfig() {
 
 	# Create a few folders needed for a couple of things and run it as the user instead of as root
 	createFolders
+
+	# Installing the font's specified and wanted by the user
+	dialog --title "Installing fonts..." --infobox "Installing the following fonts, will probably take a while: \n$fontChoices" 0 0
+	for font in $installFonts
+	do
+		pacIn $font
+	done
 }
 
 # Some things like ZSH history won't work if the needed folders aren't available to store the needed files. Therefore this function creates those folders.

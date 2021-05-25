@@ -66,6 +66,23 @@ getCredentials(){
 
 }
 
+chooseInstallFonts(){
+	fonts="noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra,Noto-fonts
+adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts,Adobe-fonts
+ttf-dejavu,DejaVu-fonts
+ttf-linux-libert,Linux-Libertine-fonts
+gnu-free-fonts,GNU-Free-fonts
+ttf-droid,Droid-fonts"
+
+	fontChoices="$(dialog --title "Font install" --no-cancel --no-items --checklist "Choose which fonts to install:" 0 0 0 $(echo "$fonts" | cut -d ',' -f2 | sort | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1)"
+
+	for font in $fontChoices
+	do
+		installFonts="${installFonts} $(echo "$fonts" | grep "$font\$" | cut -d ',' -f1)"
+	done
+
+}
+
 # SLAMGraphical is able to parse any of the CSV files in the repo to install the contents of them. This function chooses which should be used
 chooseSoftwareBundles(){
 	bundles="$(dialog --title "Bundle install" --no-cancel --no-items --checklist "Choose which software bundles you want to install:" 0 0 0 $(find ./CSVFiles -name "*.csv" | sed -e "s/\.csv//g;s/^.*\///g" | sort | awk '{sum +=1; print $1" " sum}') 3>&1 1>&2 2>&3 3>&1 )"
@@ -115,7 +132,7 @@ verifyAndProcced() {
 }
 
 main(){
- checkLaptop; checkBootMode; locateInstallDrive; getCredentials; chooseRootCommands; chooseSoftwareBundles; getSwapSize; verifyAndProcced && ./SLAMMinimal.sh
+ checkLaptop; checkBootMode; locateInstallDrive; getCredentials; chooseRootCommands; chooseInstallFonts; chooseSoftwareBundles; getSwapSize; verifyAndProcced && ./SLAMMinimal.sh
 }
 
 main
