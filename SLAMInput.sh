@@ -101,9 +101,27 @@ chooseRootCommands(){
 }
 
 # Determine needed size of swap file based on RAM size + 2 GB
-getSwapSize(){
+setupSwapFile(){
+
+	dialog --title "Swapfile?" --no-label "No swap" --yes-label "Setup swapfile" --yesno "This script is able to deploy a swap file, do you want that or would you rather have no swap space?" 0 0 || return 2;
+
 	# Converting the output from KB to B and adding 2 GB
 	swapSize="$(( $(grep MemTotal /proc/meminfo | sed 's/[^0-9]*//g') * 1024 + 2147483648 ))"
+
+	dialog --title "Swap size" --defaultno --yesno "The automatically generated size for the swap file is $(( swapSize / (1024 * 1024) )) MB. Do you want to change it?" 0 0 \
+		&& { newSwapSize="$(dialog --title "Size?" --no-cancel --inputbox "Please enter the wanted swap size in MB:" 8 50 3>&1 1>&2 2>&3 3>&1)" ; echo $newSwapSize && swapSize="$(( newSwapSize * (1024 * 1024) ))"; }
+
+	# Making sure that the swap file doesn't take up more than half of the drive
+	while [ $driveSize -lt $(( swapSize * 2 )) ];
+	do
+		dialog --title "Swap problems" --yes-label "Change/disable" --no-label "Abort installation" --yesno "It seems like the swap file is bigger half of the drive, and as such the installation unfortunatly isn't able to continue. If you want to continue though, you can change the size of it or disable it?" 0 0 \
+			&&	{ \
+					newSwapSize="$(dialog --cancel-label "Disable swap file" --inputbox "Please enter the wanted swap size in MB:" 8 50 3>&1 1>&2 2>&3 3>&1)" && swapSize="$(( newSwapSize * (1024 * 1024) ))" || return 2;\
+				} \
+			|| error "User exited as the swap file was too big for the drive"
+	done
+
+	dialog --title "New swap size" --msgbox "The size of the new swapfile will be: \n$(( swapSize / (1024 * 1024) )) MB." 8 25;
 }
 
 # For verifying the size of the drive, and wiping in and thereby preparing it for formating
@@ -120,11 +138,6 @@ verifyAndProcced() {
 	elif [ "$driveSize" -le 4294967296 ];
 	then
 		dialog --title "Very little space" --yes-label "I know what I'm doing" --no-label "Whoops, MB, abort!" --yesno "The selected drive, $drive, seem to be less than 4 GiB in size. This may be enough, but is very much an unsupported use-case for this script as there's a good chance that it's not. Are you sure you want to continue?" 8 60 || error "User exited as there is less than 4 GiB on the drive"
-
-	# Making sure that the swap file doesn't take up more than half of the drive
-	elif [ "$driveSize" -le $(( swapSize * 2 )) ];
-	then
-		dialog --title "Swap problems" --yes-label "Disable it" --no-label "Abort installation" --yesno "It seems like the swap file is bigger half of the drive, and as such the installation unfortunatly isn't able to continue. If you want to continue though, you can completly disable the swapfile?" 0 0 && swapSize=0 || error "User exited as the swap file was too big for the drive"
 	fi
 
 	# Given no errors, the program will no go onto warning the user that it's going to wipe the drive, and then procced with the script, which will wipe the drive
@@ -132,7 +145,18 @@ verifyAndProcced() {
 }
 
 main(){
- checkLaptop; checkBootMode; locateInstallDrive; getCredentials; chooseRootCommands; chooseInstallFonts; chooseSoftwareBundles; getSwapSize; verifyAndProcced && ./SLAMMinimal.sh
+	checkLaptop
+	checkBootMode
+	locateInstallDrive
+	getCredentials
+	chooseRootCommands
+	chooseInstallFonts
+	chooseSoftwareBundles
+
+	setupSwapFile
+	[ $? -eq 2 ] && { dialog --title "Disabling..." --msgbox "The swapfile has been disabled" 0 0; swapSize=0; }
+
+	verifyAndProcced && ./SLAMMinimal.sh
 }
 
 main
