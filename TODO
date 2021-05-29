@@ -3,3 +3,4 @@ Give language options for keyboard during setup
 Remember to check if drives are mounted
 Add option to let user choose minimal installation, custom installation with CSV files or installing a predefined pacckage for desktop enviroments
 Change how bootloader is configured (use kernel as bootloader for uefi)
+Add option for full disk encryption

@@ -47,6 +47,7 @@ piecesConfig() {
 
 	# Set the system locale
 	echo "	LANG=en_US.UTF-8
+			LANGUAGE=en_US:en_GB:en:da_DK
 			LC_TIME=en_DK.UTF-8
 			LC_MESSAGES=en_US.UTF-8
 			LC_COLLATE=C" | sed 's/^\s*//' 1> /etc/locale.conf
