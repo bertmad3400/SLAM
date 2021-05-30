@@ -75,13 +75,6 @@ piecesConfig() {
 
 	# Create a few folders needed for a couple of things and run it as the user instead of as root
 	createFolders
-
-	# Installing the font's specified and wanted by the user
-	dialog --title "Installing fonts..." --infobox "Installing the following fonts, will probably take a while: \n$fontChoices" 0 0
-	for font in $installFonts
-	do
-		pacIn $font
-	done
 }
 
 # Some things like ZSH history won't work if the needed folders aren't available to store the needed files. Therefore this function creates those folders.
@@ -124,8 +117,10 @@ configureSudo(){
 
 # Collection function used for configuring new install
 configureInstall(){
-	configureUsers
 	configurePerms
+	installYAY
+
+	configureUsers
 	createSwapFile
 	piecesConfig
 }
@@ -215,9 +210,22 @@ chooseInstallMethod(){
 	esac
 }
 
-installSoftware(){
-	installYAY
+installFonts(){
+	# Installing the font's specified and wanted by the user
+	dialog --title "Installing fonts..." --infobox "Installing the following fonts, will probably take a while: \n$fontChoices" 0 0
+	for font in $installFonts
+	do
+		pacIn $font
+	done
+}
+
+# Used for installing all of the different pieces used for configuration and the needed bundles
+installGraphical(){
+	# Installing my dotfiles
 	deployDotFiles
+
+	# Installing the fonts specified by the user in the start of the script
+	installFonts
 
 	# The path in which git will clone repos
 	gitPath="/home/$username/.local/src"
@@ -275,7 +283,7 @@ main(){
 	pacman --noconfirm -S archlinux-keyring || error "Somehow the keyrings couldn't be refreshed. You unfortunatly probably need to run the script again"
 
 	configureInstall
-	installSoftware
+	installGraphical
 	pacman -Qs firefox > /dev/null && configureFirefox
 	configureBootloader
 }
