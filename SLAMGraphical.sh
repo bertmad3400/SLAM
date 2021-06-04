@@ -118,9 +118,9 @@ configureSudo(){
 # Collection function used for configuring new install
 configureInstall(){
 	configurePerms
+	configureUsers
 	installYAY
 
-	configureUsers
 	createSwapFile
 	piecesConfig
 }
