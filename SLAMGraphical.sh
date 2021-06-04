@@ -244,18 +244,11 @@ configureFirefox(){
 	# Make sure the script is in the right folder
 	cd "$firefoxDir"
 
-	# Run firefox once to make sure default profiles are created. Use timeout to kill it after 30 seconds since we only give it time to create the profiles
-	timeout 30s sudo -u "$username" firefox -headless
-
 	# Create the new firefox profile
 	sudo -u "$username" firefox -headless -CreateProfile privacy
 
 	# Move the needed files into the folder
 	sudo -u "$username" cp -r /SLAM/firefoxProfile/* ${firefoxDir}*.privacy
-
-	# Make the new profile the default by replacing the name of the default entry in profiles with the one ending in .privacy and create a backup with the i option. Currently not used as firefox resets this upon first boot for some reason
-	# sudo -u "$username" sed -i.bak "s/Default=.*\..*/$(grep '[a-zA-Z0-9]*\.privacy$' profiles.ini)/" profiles.ini
-
 
 }
 
