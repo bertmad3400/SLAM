@@ -6,5 +6,6 @@ M,wireshark-qt,for analysing traffic
 M,nmap,for network recon
 M,perl-image-exiftool,tool for viewing image metadata
 A,gobuster,a directory/file & DNS busting tool
+A,burpsuite,a tool for intercepting web traffic locally
 G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images
 D,CSVFiles/CS/hacking/routersploit.dep,routersploit and the dependencies needed for it
