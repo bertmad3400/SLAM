@@ -3,3 +3,4 @@ M,noto-fonts-emoji,a font for emoji
 M,stalonetray,stand-alone system tray used with nm-applet
 M,network-manager-applet,GUI util for WIFI conf
 M,discord,a communication platform
+A,z.lua,for easier navigation in the shell
