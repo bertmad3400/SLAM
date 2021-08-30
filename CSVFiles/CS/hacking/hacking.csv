@@ -9,3 +9,4 @@ A,gobuster,a directory/file & DNS busting tool
 A,burpsuite,a tool for intercepting web traffic locally
 G,https://github.com/zed-0xff/zsteg.git,tool for finding stegonography in images
 D,CSVFiles/CS/hacking/routersploit.dep,routersploit and the dependencies needed for it
+D,CSVFiles/CS/hacking/binaryExploitation.dep,program for doing binary exploitation
